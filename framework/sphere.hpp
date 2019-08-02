@@ -13,7 +13,7 @@ class Sphere : public Shape
 {
     public:
         Sphere();
-        Sphere(vec3 const& center, double radius, string name, shared_ptr<Material> material);
+        Sphere(string name, vec3 const& center, double radius, shared_ptr<Material> material);
 
         vec3 getCenter() const;
         double getRadius() const;
