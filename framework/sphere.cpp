@@ -39,6 +39,14 @@ double Sphere::volume() const {
     return volume;
 }
 
+Hit Sphere::intersect(Ray const &ray, float &t) {
+    bool test;
+    test = intersectRaySphere(ray.origin, normalize(ray.direction), radius_*radius_, t);
+    Hit result{test, t, ray.origin, ray.direction};
+
+    return result;
+}
+
 ostream& Sphere::print(ostream &os) const {
     Shape::print(os);
     os
