@@ -22,6 +22,9 @@ class Sphere : public Shape
         double volume() const override;
         bool intersect(Ray const& ray, float& t) override;
 
+        ostream& print (ostream& os) const override;
+        ostream& operator << (ostream& os, const Sphere& s);
+
     private:
         vec3 center_;
         double radius_;

@@ -24,6 +24,7 @@ class Box : public Shape
         bool intersect(Ray const& ray, float& t) override;
 
         ostream& print(ostream& os) const override;
+        ostream& operator << (ostream& os, const Box& b);
 
     private:
         vec3 boxMin_;

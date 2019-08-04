@@ -36,3 +36,25 @@ double Box::area() const
 
     return 2*length*height+2*length*width+2*height*width;
 }
+
+double Box::volume() const {
+    double length{boxMax_.x-boxMin_.x};
+    double height{boxMax_.y-boxMin_.y};
+    double width{boxMax_.z-boxMin_.z};
+
+    double volume = length*height*width;
+    return volume;
+}
+
+ostream& Box::print(ostream &os) const {
+    Shape::print(os);
+    os
+    << "Position Min : " << boxMin_.x << ", " << boxMin_.y << ", " << boxMin_.z << "\n"
+    << "Position Max : " << boxMax_.x << ", " << boxMax_.y << ", " << boxMax_.z << "\n";
+
+    return os;
+}
+
+ostream& operator << (ostream& os, const Box& b) {
+    return b.print(os);
+}
