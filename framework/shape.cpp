@@ -25,7 +25,7 @@ shared_ptr<Material> Shape::getMaterial() const
     return material_;
 }
 
-ostream& Shape::print(ostream& os) 
+ostream& Shape::print(ostream& os) const
 {
     os << "name: " << name_ << "\n"
        << "material: " << *material_ << "\n";

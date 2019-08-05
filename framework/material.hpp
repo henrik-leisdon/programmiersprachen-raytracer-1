@@ -28,6 +28,17 @@ struct Material
             m_(m)
             {} 
 
+    friend ostream& operator << (ostream& os, Material const& mat) {
+        os << "name: " << mat.name_ << "\n"
+           << "ambient: " << mat.ka_ << "\n"
+           << "diffuse: " << mat.kd_ << "\n"
+           << "specular: " <<mat.ks_ << "\n";
+    }
+
+    //temp:
+    Color getColor(){
+        return ka_;
+    }
 
     //member variables
     private:    
@@ -38,6 +49,7 @@ struct Material
         float m_;
                     /* Phong-exponent needed for the intensity of the specular reflection, 
                     specular = direct reflection of the light source*/
+
 
 
 };

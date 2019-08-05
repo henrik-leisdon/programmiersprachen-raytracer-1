@@ -15,12 +15,11 @@ class Camera
     public:
         Camera();
         Camera(string const& name, float fov, vec3 const& pos);
-        ~Camera();
 
-        string getName() const;
-        vec3 getPos() const;
-        float getAngle() const;
-        float getDist() const;
+        //string getName() const;
+        //vec3 getPos() const;
+        //float getAngle() const;
+        //float getDist() const;
 
     private:
         string name_;

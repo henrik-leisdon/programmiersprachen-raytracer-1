@@ -15,6 +15,7 @@ class Sphere : public Shape
     public:
         Sphere();
         Sphere(string name, vec3 const& center, double radius, shared_ptr<Material> material);
+        ~Sphere();
 
         vec3 getCenter() const;
         double getRadius() const;
@@ -24,11 +25,12 @@ class Sphere : public Shape
         Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print (ostream& os) const override;
-        ostream& operator << (ostream& os, const Sphere& s);
+       
 
     private:
         vec3 center_;
         double radius_;
 };
+ ostream& operator << (ostream& os, const Sphere& s);
 
 #endif

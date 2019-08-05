@@ -25,11 +25,12 @@ class Box : public Shape
         Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print(ostream& os) const override;
-        ostream& operator << (ostream& os, const Box& b);
+       
 
     private:
         vec3 boxMin_;
         vec3 boxMax_;
 };
+ ostream& operator << (ostream& os, const Box& b);
 
 #endif // !BOX_HPP

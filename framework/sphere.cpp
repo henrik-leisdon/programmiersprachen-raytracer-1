@@ -17,7 +17,10 @@ Sphere::Sphere(string name, vec3 const& center, double radius, shared_ptr<Materi
     radius_{radius}
     {};
 
-Sphere::~Sphere() {}
+Sphere::~Sphere()
+ {
+     
+ }
 
 vec3 Sphere::getCenter() const
 {
@@ -41,7 +44,7 @@ double Sphere::volume() const {
 
 Hit Sphere::intersect(Ray const &ray, float &t) {
     bool test;
-    test = intersectRaySphere(ray.origin, normalize(ray.direction), radius_*radius_, t);
+    test = intersectRaySphere(ray.origin, normalize(ray.direction), center_ ,radius_*radius_, t);
     Hit result{test, t, ray.origin, ray.direction};
 
     return result;
