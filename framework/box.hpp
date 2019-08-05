@@ -3,6 +3,7 @@
 
 #include <glm/vec3.hpp>
 #include <memory>
+#include <hit.hpp>
 #include "shape.hpp"
 #include "ray.hpp"
 
@@ -21,9 +22,10 @@ class Box : public Shape
 
         double area() const override;
         double volume() const override;
-        bool intersect(Ray const& ray, float& t) override;
+        Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print(ostream& os) const override;
+        ostream& operator << (ostream& os, const Box& b);
 
     private:
         vec3 boxMin_;

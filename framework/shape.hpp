@@ -5,6 +5,7 @@
 #include <glm/vec3.hpp>
 #include <math.h>
 #include <string>
+#include <hit.hpp>
 
 #include "color.hpp"
 #include "ray.hpp"
@@ -25,7 +26,7 @@ class Shape
 
         virtual double area() const = 0;
         virtual double volume() const = 0;
-        virtual bool intersect (Ray const& ray, float& t) = 0;
+        virtual Hit intersect (Ray const& ray, float& t) = 0;
         virtual ostream& print (ostream& os) const;
 
         private:

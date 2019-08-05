@@ -5,6 +5,7 @@
 
 #include "ray.hpp"
 #include "shape.hpp"
+#include "hit.hpp"
 
 using namespace std;
 using namespace glm;
@@ -20,7 +21,10 @@ class Sphere : public Shape
 
         double area() const override;
         double volume() const override;
-        bool intersect(Ray const& ray, float& t) override;
+        Hit intersect(Ray const& ray, float& t) override;
+
+        ostream& print (ostream& os) const override;
+        ostream& operator << (ostream& os, const Sphere& s);
 
     private:
         vec3 center_;

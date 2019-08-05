@@ -36,3 +36,46 @@ double Box::area() const
 
     return 2*length*height+2*length*width+2*height*width;
 }
+
+double Box::volume() const {
+    double length{boxMax_.x-boxMin_.x};
+    double height{boxMax_.y-boxMin_.y};
+    double width{boxMax_.z-boxMin_.z};
+
+    double volume = length*height*width;
+    return volume;
+}
+
+Hit Box::intersect(Ray const &ray, float &t) {
+    float r = (boxMin_.x - ray.origin.x)/ray.direction.x;
+    bool test = false;
+
+    float y = ray.origin.y + r*ray.direction.y;
+    float z = ray.origin.z + r*ray.direction.z;
+    if(boxMin_.y <= y && y <= boxMax_.y){
+        if(boxMin_.z <= z && z <= boxMax_.z){
+            test = true;
+        }
+    }
+
+    if(t < r){
+        test = false;
+    }
+
+    Hit result{test, t, ray.origin, ray.direction};
+    return result;
+}
+
+ostream& Box::print(ostream &os) const {
+    Shape::print(os);
+    os
+    << "Position Min : " << boxMin_.x << ", " << boxMin_.y << ", " << boxMin_.z << "\n"
+    << "Position Max : " << boxMax_.x << ", " << boxMax_.y << ", " << boxMax_.z << "\n";
+
+    return os;
+}
+
+ostream& operator << (ostream& os, const Box& b) {
+    return b.print(os);
+}
+
