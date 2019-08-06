@@ -120,6 +120,8 @@ static void read_sdf(string const& path, Scene& scene)
                 Color color = {stof(lineparts[6]), stof(lineparts[7]), stof(lineparts[8])};
 
                 Light light = Light(lineparts[2], postition, color, stoi(lineparts[9]));
+                shared_ptr<Light> lightPtr = make_shared<Light>(light);
+                scene.light_.push_back(lightPtr);
 
             }
             if(lineparts[1] == "camera") 

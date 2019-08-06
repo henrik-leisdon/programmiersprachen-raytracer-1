@@ -41,7 +41,7 @@ struct Material
     }
 
     //member variables
-    private:    
+       
         string name_;
         Color ka_; /*ka, kd, ks are reflection coefficients*/ 
         Color kd_;

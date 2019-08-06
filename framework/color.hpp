@@ -21,11 +21,28 @@ struct Color
     return os;
   }
 
+  void bound() 
+  {
+    if(r<0)
+      r = 0;
+    if(r>1)
+      r = 1;
+    if(g<0)
+      g = 0;
+    if(g>1)
+      g = 1;
+    if(b<0)
+      b = 0;
+    if(b>1)
+      b = 1;    
+  }
+
   Color& operator+=(Color const& other)
   {
     r += other.r;
     g += other.g;
     b += other.b;
+    bound();
     return *this;
   }
 
@@ -34,6 +51,25 @@ struct Color
     r -= other.r;
     g -= other.g;
     b -= other.b;
+    bound();
+    return *this;
+  }
+
+  Color& operator*=(Color const& other)
+  {
+    r *=other.r;
+    g *= other.g;
+    b *=other.b;
+    bound();
+    return *this;
+  }
+
+  Color& operator*=(float other)
+  {
+    r*=other;
+    g*=other;
+    b*=other;
+    bound();
     return *this;
   }
 
@@ -42,6 +78,7 @@ struct Color
     auto tmp(a);
     tmp += b;
     return tmp;
+    
   }
 
   friend Color operator-(Color const& a, Color const& b)
@@ -49,7 +86,24 @@ struct Color
     auto tmp(a);
     tmp -= b;
     return tmp;
+ 
   }
+
+  friend Color operator*(Color const& a, Color const& b)
+  {
+    auto tmp(a);
+    tmp *=b;
+    return tmp;
+  }
+
+  friend Color operator*(Color const& a, float b)
+  {
+    auto tmp(a);
+    tmp *=b;
+    return tmp;
+  }
+
+
 
   float r;
   float g;

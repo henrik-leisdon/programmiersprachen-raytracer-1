@@ -24,6 +24,7 @@ public:
 
   void render();
   Color getPixelColor(Ray const& ray, Scene const& scene);
+  Color getIllumination(Hit const& hit, shared_ptr<Shape> nearestObj, Scene const& scene);
 
   void write(Pixel const& p);
   

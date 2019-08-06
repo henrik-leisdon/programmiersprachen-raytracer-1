@@ -24,27 +24,21 @@ void Renderer::render()
   Scene scene;
   std::size_t const checker_pattern_size = 20;
   read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  cout << ". file loaded \n";
+  //cout << ". file loaded \n";
   int i = scene.shapes_.size() ;
-  cout <<  "scene size: " << i << "\n";
+  //cout <<  "scene size: " << i << "\n";
 
   for (unsigned y = 0; y < height_; ++y) {
-    for (unsigned x = 0; x < width_; ++x) {
-      
+    for (unsigned x = 0; x < width_; ++x) {      
       Pixel p(x,y);
-      vec3 origin{400.0f,300.0f,0.0f};
-      vec3 direction{x-origin.x/2,y-origin.y/2,-50.0f};
+
+      vec3 origin{0.0f,0.0f,0.0f};
+      vec3 direction{x,y,-50.0f};
       Ray ray{origin, normalize(direction)};
 
       p.color = getPixelColor(ray, scene);
-
-      /* if ( ((x/checker_pattern_size)%2) != ((y/checker_pattern_size)%2)) {
-        p.color = Color{1.0f, 1.0f, float(y)/height_};
-      } else {
-        p.color = Color{1.0f, 0.0f, float(y)/width_};
-      }
-      */
       write(p);
+      //cout << "height: " << x << " width: " <<y <<"\n";
     }
   }
   ppm_.save(filename_);
@@ -61,12 +55,31 @@ Color Renderer::getPixelColor(Ray const& ray, Scene const& scene)
   {
     Hit h= i->intersect(ray, distance);
     if(h.hit_ == true){
-      return i->getMaterial()->getColor();
+        return  i->getMaterial()->ka_; //getIllumination(h, i, scene); //
 
+    } else{
+        return Color{1.0f,1.0f,1.0f};
     }
   }
 
   
+}
+
+Color Renderer::getIllumination(Hit const& hit, shared_ptr<Shape> nearestObj, Scene const& scene) 
+{
+  for(auto i : scene.light_)
+  {
+    vec3 lightPos = i->getPos();
+    vec3 vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.z,lightPos.z-hit.hitpoint_.z};
+    float vec = dot(normalize(hit.direction_), vecToLight);
+
+    Color b = i->getColor()*i->getBrightness(); //Color{col.r*bright, col.g*bright, col.b*bright};
+    //cout << "after calc color b";
+    Color c = b*nearestObj->getMaterial()->getColor()*vec;
+    //cout << "color: " << c.g << "\n" ;
+    return c;
+  }
+    
 }
 
 void Renderer::write(Pixel const& p)
