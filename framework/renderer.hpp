@@ -14,6 +14,7 @@
 #include "pixel.hpp"
 #include "scene.hpp"
 #include "ppmwriter.hpp"
+//#include "camera.hpp"
 #include <string>
 #include <glm/glm.hpp>
 

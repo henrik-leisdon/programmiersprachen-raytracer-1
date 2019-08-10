@@ -13,7 +13,7 @@
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "light.hpp"
-#include "composite.hpp"
+//#include "composite.hpp"
 
 using namespace std;
 using namespace glm;
@@ -29,7 +29,7 @@ struct Scene
 
         map <string, shared_ptr<Material>> materialMap;
         vector<shared_ptr<Shape>> shapes_;
-        shared_ptr<Composite> composite_;
+        //shared_ptr<Composite> composite_;
         vector<shared_ptr<Light>> light_;
         Camera camera_;
 

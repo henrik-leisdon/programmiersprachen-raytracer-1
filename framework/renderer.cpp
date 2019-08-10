@@ -23,7 +23,7 @@ void Renderer::render()
 {
   Scene scene;
   std::size_t const checker_pattern_size = 20;
-  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   //cout << ". file loaded \n";
   int i = scene.shapes_.size() ;
   //cout <<  "scene size: " << i << "\n";

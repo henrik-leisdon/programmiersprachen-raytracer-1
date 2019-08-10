@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++14 -g  -rdynamic CMakeFiles/example.dir/example.cpp.o  -o example ../framework/libframework.a ../external/glfw-3.2.1/src/libglfw3.a -lGL -lGLU -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor 

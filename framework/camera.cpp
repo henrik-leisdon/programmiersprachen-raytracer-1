@@ -22,6 +22,7 @@ Camera::Camera(string const& name, float fov, vec3 const& pos):
     up_({0.0f,1.0f,0.0f})
     {
         float radius = (angle_ * M_PI/360);
+        //dist_ = tan((90 - angle_ / 2) * M_PI /180);
         dist_ = 0.5/tan(radius);
     };
 
