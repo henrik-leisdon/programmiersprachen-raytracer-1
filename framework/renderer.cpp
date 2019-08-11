@@ -23,7 +23,8 @@ void Renderer::render()
 {
   Scene scene;
   std::size_t const checker_pattern_size = 20;
-  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   //cout << ". file loaded \n";
   int i = scene.shapes_.size() ;
   //cout <<  "scene size: " << i << "\n";
@@ -48,19 +49,35 @@ void Renderer::render()
 Color Renderer::getPixelColor(Ray const& ray, Scene const& scene)
 {
   //cout << "in get pixel Color \n";
-  float distance = 100000.0f;
+  float distance = 0.0f;
+  float dist = 0.0f;
+
   shared_ptr<Shape> nearestObject;
   
   for(auto i : scene.shapes_)
   {
+   
     Hit h= i->intersect(ray, distance);
+     //cout << "distPtr value: " << distance << "\n";
     if(h.hit_ == true){
-        return  i->getMaterial()->ka_; //getIllumination(h, i, scene); //
-
-    } else{
-        return Color{1.0f,1.0f,1.0f};
+      //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n "; 
+      if(h.dist_<dist|| dist== 0.0f)
+      {
+        dist = h.dist_;
+        nearestObject = i;
+        //cout << " nearest (name) " << nearestObject->getName() << "\n"; 
+      }
     }
   }
+  if(nearestObject!= nullptr) {
+    //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
+    return  nearestObject->getMaterial()->ka_; //getIllumination(h, i, scene); //
+    
+  }  
+   else{
+        return Color{1.0f,1.0f,1.0f};
+    }
+  
 
   
 }

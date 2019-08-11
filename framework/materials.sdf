@@ -3,8 +3,11 @@ define material red   1 0 0 1 0 0 1 0 0 20
 define material green 0 1 0 0 1 0 0 1 0 50
 define material blue  0 0 1 0 0 1 0 0 1 10
 
-//define shape sphere bsphere 600 500 -200 100 green
-define shape box bbox 20 0 -75 50 35 -150 blue
+define shape sphere bsphere 600 500 -300 100 green
+define shape box bbox 120 120 -200 150 150 -250 blue
+define shape box bbox2 100 110 -201 130 140 -205 red
+
+
 
 define light lighty 0 100 -50 0.2 0.2 0.2 3
 

@@ -60,18 +60,25 @@ Hit Box::intersect(Ray const &ray, float &t) {
     if(ray.direction.x != 0) {
         ta[0] = (boxMin_.x - ray.origin.x) / normalize(ray.direction.x);  //normalize causes box to be as warped as sphere
         vec3 left = ray.origin + ta[0] * ray.direction;
-        if((left.y <= boxMax_.y && left.y >= boxMin_.y && left.z >= boxMax_.z && left.z <= boxMin_.z)){
+        if((left.y <= boxMax_.y && left.y >= boxMin_.y && left.z >= boxMax_.z && left.z <= boxMin_.z))
+        {
             test = true;
-        } else {test = false;
-        ta[0] = -1;}
+        } 
+        else {
+            test = false;
+            ta[0] = -1;
+        }
 
     //right
         ta[1] = (boxMax_.x - ray.origin.x) / normalize(ray.direction.x);
         vec3 right = ray.origin + ta[1] * ray.direction;
-        if((right.y <= boxMax_.y && right.y >= boxMin_.y && right.z >= boxMax_.z && right.z <= boxMin_.z)){
+        if((right.y <= boxMax_.y && right.y >= boxMin_.y && right.z >= boxMax_.z && right.z <= boxMin_.z))
+        {
             test = true;
-        } else {test = false;
-        ta[1] = -1;}
+        } else {
+            test = false;
+            ta[1] = -1;
+        }
     }
 
     //top
@@ -80,34 +87,52 @@ Hit Box::intersect(Ray const &ray, float &t) {
         vec3 top = ray.origin + ta[2] * ray.direction;
         if((top.x <= boxMax_.x && top.x >= boxMin_.x && top.z >= boxMax_.z && top.z <= boxMin_.z )) {
             test = true;
-        } else {test = false;
-        ta[2] = -1;}
+        } 
+        else {
+            test = false;
+            ta[2] = -1;
+        }
 
     //bottom
         ta[3] = (boxMin_.y - ray.origin.y) / normalize(ray.direction.y);
         vec3 bottom = ray.origin + ta[3] * ray.direction;
-        if((bottom.x <= boxMax_.x && bottom.x >= boxMin_.x && bottom.z >= boxMax_.z && bottom.z <= boxMin_.z )) {
+        if((bottom.x <= boxMax_.x && bottom.x >= boxMin_.x && bottom.z >= boxMax_.z && bottom.z <= boxMin_.z )) 
+        {
             test = true;
-        } else {test = false;
-        ta[3] = -1;}
+        } 
+        else 
+        {
+            test = false;
+            ta[3] = -1;
+        }
     }
 
     //front
     if(ray.direction.z !=0) {
         ta[4] = (boxMin_.z - ray.origin.z) / normalize(ray.direction.z);
         vec3 front = ray.origin + ta[4] * ray.direction;
-        if((front.x <= boxMax_.x && front.x >= boxMin_.x && front.y <= boxMax_.y && front.y >= boxMin_.y)) {
+        if((front.x <= boxMax_.x && front.x >= boxMin_.x && front.y <= boxMax_.y && front.y >= boxMin_.y)) 
+        {
             test = true;
-        } else {test = false;
-        ta[4] = -1;}
+        } 
+        else 
+        {
+            test = false;
+            ta[4] = -1;
+        }
 
     //back
         ta[5] = (boxMin_.z - ray.origin.z) / normalize(ray.direction.z);
         vec3 back = ray.origin + ta[5] * ray.direction;
-        if((back.x <= boxMax_.x && back.x >= boxMin_.x && back.y <= boxMax_.y && back.y >= boxMin_.y)) {
+        if((back.x <= boxMax_.x && back.x >= boxMin_.x && back.y <= boxMax_.y && back.y >= boxMin_.y)) 
+        {
             test = true;
-        } else {test = false;
-        ta[5] = -1; }
+        } 
+        else 
+        {
+            test = false;
+            ta[5] = -1; 
+        }
     }
 
     float final_t;
@@ -166,8 +191,6 @@ ostream& Box::print(ostream &os) const {
 
     return os;
 }
-
 ostream& operator << (ostream& os, const Box& b) {
     return b.print(os);
 }
-

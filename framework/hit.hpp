@@ -30,7 +30,7 @@ struct Hit {
     */
 
     bool hit_;
-    double dist_;
+    float dist_;
     vec3 hitpoint_;
     vec3 direction_;
 };
