@@ -25,17 +25,22 @@ void Renderer::render()
   std::size_t const checker_pattern_size = 20;
   //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  //cout << ". file loaded \n";
   int i = scene.shapes_.size() ;
-  //cout <<  "scene size: " << i << "\n";
-
+ 
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {      
       Pixel p(x,y);
 
       vec3 origin{0.0f,0.0f,0.0f};
-      vec3 direction{x,y,-50.0f};
-      Ray ray{origin, normalize(direction)};
+      vec3 direction{x-width_/2.0f,y-height_/2.0f,-100.1f};
+      vec3 normalizedDirection{normalize(direction)};
+      Ray ray{origin, normalizedDirection};
+      //std::cout << width_ << " " << height_ << std::endl;
+      //std::cout << direction.x  << " " << direction.y << " " << direction.z << std::endl;
+      //std::cout << normalizedDirection.x << " " << normalizedDirection.y << " " << normalizedDirection.z << std::endl;
+      vec3 rayColor {(normalizedDirection+vec3{1})*vec3{0.5}};
+      //p.color = Color{x/float(width_), y/float(height_), 0.0f};//(direction+vec3{1})*vec3{0.5}
+      //p.color = Color{rayColor.x, rayColor.y, rayColor.z};
 
       p.color = getPixelColor(ray, scene);
       write(p);
