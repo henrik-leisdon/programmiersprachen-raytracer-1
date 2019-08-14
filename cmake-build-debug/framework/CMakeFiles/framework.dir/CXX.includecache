@@ -586,10 +586,6 @@ detail/type_vec4.hpp
 detail/func_vector_relational.hpp
 ../external/glm-0.9.5.3/glm/detail/func_vector_relational.hpp
 
-../framework/color.hpp
-iostream
--
-
 ../framework/hit.hpp
 iostream
 -
@@ -599,12 +595,6 @@ memory
 -
 color.hpp
 ../framework/color.hpp
-
-/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/box.cpp
-glm-0.9.5.3/glm/glm.hpp
--
-box.hpp
-/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/box.hpp
 
 /home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/box.hpp
 glm/vec3.hpp
@@ -617,10 +607,6 @@ shape.hpp
 /home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/shape.hpp
 ray.hpp
 /home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/ray.hpp
-
-/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/camera.cpp
-camera.hpp
-/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/camera.hpp
 
 /home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/camera.hpp
 string

@@ -19,17 +19,18 @@ Renderer::Renderer(Scene const& scene, unsigned w, unsigned h, std::string const
 {}
 
 //loads scene and renders every pixel
-void Renderer::render()
+void Renderer::raycast()
 {
   Scene scene;
   std::size_t const checker_pattern_size = 20;
-  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
  
   for (unsigned y = 0; y < height_; ++y) {
-    for (unsigned x = 0; x < width_; ++x) {      
+    for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
+      //Ray pixRay = scene.camera_.camRay(x, y, width_, height_);
 
       vec3 origin{0.0f,0.0f,0.0f};
       vec3 direction{x-width_/2.0f,y-height_/2.0f,-100.1f};
@@ -42,7 +43,7 @@ void Renderer::render()
       //p.color = Color{x/float(width_), y/float(height_), 0.0f};//(direction+vec3{1})*vec3{0.5}
       //p.color = Color{rayColor.x, rayColor.y, rayColor.z};
 
-      p.color = getPixelColor(ray, scene);
+      p.color = trace(ray, scene);
       write(p);
       //cout << "height: " << x << " width: " <<y <<"\n";
     }
@@ -51,7 +52,7 @@ void Renderer::render()
 }
 
 //get the color for the pixel (temporary just normal color without shadow)
-Color Renderer::getPixelColor(Ray const& ray, Scene const& scene)
+Color Renderer::trace(Ray const &ray, Scene const &scene)
 {
   //cout << "in get pixel Color \n";
   float distance = 0.0f;
