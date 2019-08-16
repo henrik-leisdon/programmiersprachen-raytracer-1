@@ -57,45 +57,41 @@ void Renderer::raycast()
 
 //get the color for the pixel (temporary just normal color without shadow)
 Color Renderer::trace(Ray const &ray, Scene const &scene) {
-  //cout << "in get pixel Color \n";
-  float delta = 1;
-  float distance = 0.0f;
-  float dist = 0.0f;
+    //cout << "in get pixel Color \n";
 
-  shared_ptr<Shape> nearestObject;
+    float distance = 0.0f;
+    float dist = 100000.0f;
 
-  for (auto i : scene.shapes_) {
-    Hit h = i->intersect(ray, distance);
-    //cout << "distPtr value: " << distance << "\n";
-    if (h.hit_ == true) {
-      //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n ";
-      if (h.dist_ < dist || dist == 0.0f) {
-        dist = h.dist_;
-        nearestObject = i;
-        //cout << " nearest (name) " << nearestObject->getName() << "\n";
+    shared_ptr<Shape> nearestObject;
 
-          if (nearestObject != nullptr) {
-
-              //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
-              //diff_color;//getIllumination(h, i, scene); //
-              Color amb = getAmbientIllumination(h, scene);
-              Color col = ptLight(h, ray, scene, delta);
-              return col*delta; //amb+(col*delta);
-          } else {
-              return Color{1.0f, 1.0f, 1.0f};
-          }
-      }
+    for (auto i : scene.shapes_) {
+        Hit h = i->intersect(ray, distance);
+        //cout << "distPtr value: " << distance << "\n";
+        if (h.hit_ == true) {
+            //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n ";
+            if (h.dist_ < dist || dist == 0) {//h.dist_ < dist || dist == 0.0f) {
+                dist = h.dist_; //h.dist_;
+                nearestObject = i;
+                if (nearestObject != nullptr) {
+                    //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
+                    Color amb = getAmbientIllumination(h, scene);
+                    Color col = ptLight(h, ray, scene);
+                    Color ambiance = nearestObject->getMaterial()->ka_;
+                    return ambiance+col; //amb+(col*delta);
+                } else {
+                    return Color{1.0f, 1.0f, 1.0f};
+                }
+            }
+        }
     }
-    //Color pt = ptLight(h, ray, scene, delta); JUST the light
-      //return pt;
-  }
-  /* if (nearestObject != nullptr) {
-
-    return nearestObject->getMaterial()->ka_;
-  } else {
-    return Color{1.0f, 1.0f, 1.0f};
-  } */
 }
+  /* if(nearestObject != nullptr){
+      Color pix_color = ptLight(*h, ray, scene);
+      return pix_color;
+  } else{
+      return Color{1.0f,1.0f,1.0f};
+  } */
+
 
 Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
   for(auto i : scene.light_) {
@@ -108,34 +104,34 @@ Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
   }
 }
 
-Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene ,float delta) {
+Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene) {
+    float dist = 0.0f;
     for(auto i : scene.light_){
       vec3 lightPos = i->getPos();
       vec3 vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.y,lightPos.z-hit.hitpoint_.z};
       vec3 normVecToLight = glm::normalize(vecToLight);
 
-      //float distance = glm::length(hit.hitpoint_ - i->getPos());
-      Color diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
-      return diffuse;
-    }
-}
+                  Color diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
+                  return diffuse;
+              }
+      }
 
-Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Scene const& scene)
-{
-  for(auto i : scene.light_) {
+
+Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Scene const& scene) {
+  for (auto i : scene.light_) {
     float vec = dot(normalize(hit.direction_), normVecToLight);
 
     Color diff_col = i->getColor();
     int bright = i->getBrightness();
     Color ip = diff_col * bright;
-    for(auto j : scene.shapes_) {
-        Color kd = j->getMaterial()->kd_;
-        Color diffuse_color = ip * kd * vec;
+    for (auto j : scene.shapes_) {
+          Color kd = j->getMaterial()->kd_;
+          Color diffuse_color = ip * kd * vec;
 
-        return diffuse_color;
+          return diffuse_color;
+        }
+      }
     }
-  }
-}
 
 
 void Renderer::write(Pixel const& p)
