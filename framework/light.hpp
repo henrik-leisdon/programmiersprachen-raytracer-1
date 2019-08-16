@@ -15,17 +15,19 @@ class Light
 {
     public:
         Light();
-        Light(string name, vec3 const& pos, Color const& color, int brightness);
+        Light(string name, vec3 const& pos, Color const& color,  int brightness); //Color const& ambColor,
 
         string getName();
         vec3 getPos();
         Color getColor();
+        Color getColorAmb();
         int getBrightness();
 
     private:
         string name_;
         vec3 pos_;
         Color color_;
+        Color ambColor_;
         int brightness_;
 
 

@@ -16,7 +16,12 @@ class Camera
         Camera();
         Camera(string const& name, float fov, vec3 const& pos);
 
-        Ray camRay(int x, int y, unsigned int width, unsigned int height) const;
+
+        float getAngle();
+        vec3 getPos();
+
+
+        Ray camRay(int x, int y, float width, float height) const;
         //string getName() const;
         //vec3 getPos() const;
         //float getAngle() const;

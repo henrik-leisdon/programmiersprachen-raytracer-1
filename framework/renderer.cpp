@@ -31,9 +31,13 @@ void Renderer::raycast()
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
       //Ray pixRay = scene.camera_.camRay(x, y, width_, height_);
+      //float d = (width_/2.0f) / tan((scene.camera_.getAngle()/2.0f)); //* M_PI/180.0f
+      //float dTwo = (width_/2.0f) / tan((scene.camera_.getAngle()/2.0f * (float)M_PI/180.0f)); //
+      //cout << "d = " << d << "\n";
+      //cout << "d2 = " << dTwo << "\n";
 
       vec3 origin{0.0f,0.0f,0.0f};
-      vec3 direction{x-width_/2.0f,y-height_/2.0f,-100.1f};
+      vec3 direction{x-width_/2.0f,y-height_/2.0f, -101.0f};
       vec3 normalizedDirection{normalize(direction)};
       Ray ray{origin, normalizedDirection};
       //std::cout << width_ << " " << height_ << std::endl;
@@ -52,58 +56,87 @@ void Renderer::raycast()
 }
 
 //get the color for the pixel (temporary just normal color without shadow)
-Color Renderer::trace(Ray const &ray, Scene const &scene)
-{
+Color Renderer::trace(Ray const &ray, Scene const &scene) {
   //cout << "in get pixel Color \n";
+  float delta = 1;
   float distance = 0.0f;
   float dist = 0.0f;
 
   shared_ptr<Shape> nearestObject;
-  
-  for(auto i : scene.shapes_)
-  {
-   
-    Hit h= i->intersect(ray, distance);
-     //cout << "distPtr value: " << distance << "\n";
-    if(h.hit_ == true){
-      //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n "; 
-      if(h.dist_<dist|| dist== 0.0f)
-      {
+
+  for (auto i : scene.shapes_) {
+    Hit h = i->intersect(ray, distance);
+    //cout << "distPtr value: " << distance << "\n";
+    if (h.hit_ == true) {
+      //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n ";
+      if (h.dist_ < dist || dist == 0.0f) {
         dist = h.dist_;
         nearestObject = i;
-        //cout << " nearest (name) " << nearestObject->getName() << "\n"; 
+        //cout << " nearest (name) " << nearestObject->getName() << "\n";
+
+          if (nearestObject != nullptr) {
+
+              //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
+              //diff_color;//getIllumination(h, i, scene); //
+              Color amb = getAmbientIllumination(h, scene);
+              Color col = ptLight(h, ray, scene, delta);
+              return col*delta; //amb+(col*delta);
+          } else {
+              return Color{1.0f, 1.0f, 1.0f};
+          }
       }
     }
+    //Color pt = ptLight(h, ray, scene, delta); JUST the light
+      //return pt;
   }
-  if(nearestObject!= nullptr) {
-    //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
-    return  nearestObject->getMaterial()->ka_; //getIllumination(h, i, scene); //
-    
-  }  
-   else{
-        return Color{1.0f,1.0f,1.0f};
+  /* if (nearestObject != nullptr) {
+
+    return nearestObject->getMaterial()->ka_;
+  } else {
+    return Color{1.0f, 1.0f, 1.0f};
+  } */
+}
+
+Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
+  for(auto i : scene.light_) {
+    Color ia = i->getColor();
+    for(auto j : scene.shapes_) {
+      Color ka = j->getMaterial()->ka_;
+      Color amb_col = ia*ka;
+      return amb_col;
     }
-  
-
-  
-}
-
-Color Renderer::getIllumination(Hit const& hit, shared_ptr<Shape> nearestObj, Scene const& scene) 
-{
-  for(auto i : scene.light_)
-  {
-    vec3 lightPos = i->getPos();
-    vec3 vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.z,lightPos.z-hit.hitpoint_.z};
-    float vec = dot(normalize(hit.direction_), vecToLight);
-
-    Color b = i->getColor()*i->getBrightness(); //Color{col.r*bright, col.g*bright, col.b*bright};
-    //cout << "after calc color b";
-    Color c = b*nearestObj->getMaterial()->getColor()*vec;
-    //cout << "color: " << c.g << "\n" ;
-    return c;
   }
-    
 }
+
+Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene ,float delta) {
+    for(auto i : scene.light_){
+      vec3 lightPos = i->getPos();
+      vec3 vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.y,lightPos.z-hit.hitpoint_.z};
+      vec3 normVecToLight = glm::normalize(vecToLight);
+
+      //float distance = glm::length(hit.hitpoint_ - i->getPos());
+      Color diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
+      return diffuse;
+    }
+}
+
+Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Scene const& scene)
+{
+  for(auto i : scene.light_) {
+    float vec = dot(normalize(hit.direction_), normVecToLight);
+
+    Color diff_col = i->getColor();
+    int bright = i->getBrightness();
+    Color ip = diff_col * bright;
+    for(auto j : scene.shapes_) {
+        Color kd = j->getMaterial()->kd_;
+        Color diffuse_color = ip * kd * vec;
+
+        return diffuse_color;
+    }
+  }
+}
+
 
 void Renderer::write(Pixel const& p)
 {
