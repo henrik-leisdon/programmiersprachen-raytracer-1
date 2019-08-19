@@ -134,6 +134,7 @@ static void read_sdf(string const& path, Scene& scene) {
                 shared_ptr<Camera> camptr = make_shared<Camera>(camera);
                 scene.camera_p.push_back(camptr);
                 cout << "camera loaded ";
+                cout << "fov : " << camera.getAngle() << "\n";
             }
 
         }

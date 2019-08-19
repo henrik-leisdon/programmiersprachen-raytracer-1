@@ -19,13 +19,8 @@ class Camera
 
         float getAngle();
         vec3 getPos();
-
-
-        Ray camRay(int x, int y, float width, float height) const;
-        //string getName() const;
-        //vec3 getPos() const;
-        //float getAngle() const;
-        //float getDist() const;
+        vec3 getUp();
+        vec3 getDir();
 
     private:
         string name_;
