@@ -131,6 +131,7 @@ static void read_sdf(string const& path, Scene& scene) {
                 vec3 position = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
                 float fov = {stof(lineparts[3])};
                 Camera camera = Camera((lineparts[2]), fov, position);
+                
                 shared_ptr<Camera> camptr = make_shared<Camera>(camera);
                 scene.camera_p.push_back(camptr);
                 cout << "camera loaded ";
