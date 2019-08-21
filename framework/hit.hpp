@@ -9,25 +9,7 @@
 using namespace std;
 using namespace glm;
 
-#define INFINITY (__builtin_inff ())
-
-//class Shape;
-
 struct Hit {
-
-    /*Hit():
-        hit_{false},
-        dist_{INFINITY},
-        direction_{},
-        hitpoint_{} {}
-
-    Hit(bool hit, double dist, vec3
-    const& direction, vec3 const& hitpoint):
-        hit_{hit},
-        dist_{dist},
-        direction_{direction},
-        hitpoint_{hitpoint} {}
-    */
 
     bool hit_;
     float dist_;

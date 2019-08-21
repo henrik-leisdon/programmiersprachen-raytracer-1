@@ -27,6 +27,7 @@ public:
   Color trace(Ray const& ray, Scene const& scene);
   Color getAmbientIllumination(Hit const& hit, Scene const& scene);
   Color getDiffuseIllumination(Hit const& hit, vec3 normVecToLight, Scene const& scene);
+  Color getSpecularIllumination(Hit const& hit, Ray const& ray, vec3 normVecToLight, Scene const& scene);
   Color ptLight(Hit const& hit, Ray const& ray, Scene const& scene);
   void write(Pixel const& p);
   

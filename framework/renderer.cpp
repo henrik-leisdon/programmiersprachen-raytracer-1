@@ -24,8 +24,8 @@ void Renderer::raycast()
   Scene scene;
   //Camera cam;
   std::size_t const checker_pattern_size = 20;
-  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
   //  for(auto i : scene.camera_p){
   //      a = i->getAngle();
@@ -69,6 +69,11 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
     shared_ptr<Shape> nearestObject;
     Hit h;
 
+    Color col;
+    Color amb_mat;
+    Color amb_lig;
+    Color final_ambiance;
+
     //get the nearest object
     for (auto i : scene.shapes_) {
         h = i->intersect(ray, distance);
@@ -83,44 +88,52 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
     //get the light
     if (nearestObject != nullptr) {
         //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
-        Color col = ptLight(h, ray, scene);
-        Color ambiance = nearestObject->getMaterial()->ka_;
-        return ambiance+col; //ambobj;
+        col = ptLight(h, ray, scene);
+
+        amb_mat = nearestObject->getMaterial()->ka_;
+        amb_lig = getAmbientIllumination(h, scene);
+        final_ambiance = amb_mat*amb_lig;
+
+        Color final = col+final_ambiance;
+        return final;
     } else {
         return Color{1.0f, 1.0f, 1.0f};
     }
 }
 
-//get the light of the nearest object
+//get the ambient light in scene
 Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
-  for(auto i : scene.light_) {
-    Color ia = i->getColor();
-    for(auto j : scene.shapes_) {
-      Color ka = j->getMaterial()->ka_;
-      Color amb_col = ia*ka;
-      return amb_col;
+
+    Color ia;
+
+    for(auto i : scene.light_) {
+        ia = i->getColorAmb();
     }
-  }
+    return ia;
 }
 
 // get the pointlights in the scene to determine the diffuse illumination
 Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene) {
+
     vec3 normVecToLight;
     vec3 lightPos;
     vec3 vecToLight;
     Color diffuse;
+    Color specular;
 
     for(auto i : scene.light_){
-      lightPos = i->getPos();
-      vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.y,lightPos.z-hit.hitpoint_.z};
-      normVecToLight = glm::normalize(vecToLight);
-      diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
-            }
-              return diffuse;
-        }
+        lightPos = i->getPos();
+        vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.y,lightPos.z-hit.hitpoint_.z};
+        normVecToLight = glm::normalize(vecToLight);
+        diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
+        specular = getSpecularIllumination(hit, ray, normVecToLight, scene);
+    }
+    return diffuse;
+}
 
 
 Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Scene const& scene) {
+
     Color diff_col;
     int bright;
     Color ip;
@@ -129,21 +142,29 @@ Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Sce
     float vec;
 
     //for every light get the diffuse color of the nearest object
+    //multiply the color of the diffuse light and its brightness with the material color of the object
     for (auto i : scene.light_) {
-    vec = dot(normalize(hit.direction_), normVecToLight);
-    diff_col = i->getColor();
-    bright = i->getBrightness();
-    ip = diff_col * bright;
-        for (auto j : scene.shapes_) {
-          kd = j->getMaterial()->kd_;
-            diffuse_color = ip * kd * vec;
-            }
+        vec = dot(normalize(hit.direction_), normVecToLight);
+        diff_col = i->getColor();
+        bright = i->getBrightness();
+        ip = diff_col * bright;
+            for (auto j : scene.shapes_) {
+                kd = j->getMaterial()->kd_;
+                diffuse_color = ip * kd * vec;
+                }
         }
     return diffuse_color;
     }
 
-void Renderer::write(Pixel const& p)
-{
+
+Color Renderer::getSpecularIllumination(Hit const &hit, Ray const &ray, vec3 normVecToLight, Scene const &scene) {
+
+
+}
+
+
+void Renderer::write(Pixel const& p) {
+
   // flip pixels, because of opengl glDrawPixels
   size_t buf_pos = (width_*p.y + p.x);
   if (buf_pos >= color_buffer_.size() || (int)buf_pos < 0) {
