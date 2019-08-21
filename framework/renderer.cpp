@@ -60,21 +60,19 @@ void Renderer::raycast()
   ppm_.save(filename_);
 }
 
-//get the color for the pixel (temporary just normal color without shadow)
+//trace the ray through the scene
 Color Renderer::trace(Ray const &ray, Scene const &scene) {
-    //cout << "in get pixel Color \n";
-
+    
     float distance = 0.0f;
     float dist = 100000.0f;
 
     shared_ptr<Shape> nearestObject;
     Hit h;
 
+    //get the nearest object
     for (auto i : scene.shapes_) {
         h = i->intersect(ray, distance);
-        //cout << "distPtr value: " << distance << "\n";
         if (h.hit_ == true) {
-            //cout<< " name " << i->getName() << " dist " << h.dist_ << " distance value  " << dist << " in hit \n ";
             if (h.dist_ < dist || dist == 0) {//h.dist_ < dist || dist == 0.0f) {
                 dist = h.dist_; //h.dist_;
                 nearestObject = i;
@@ -82,6 +80,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
         }
     }
 
+    //get the light
     if (nearestObject != nullptr) {
         //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
         Color col = ptLight(h, ray, scene);
@@ -92,6 +91,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
     }
 }
 
+//get the light of the nearest object
 Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
   for(auto i : scene.light_) {
     Color ia = i->getColor();
@@ -103,6 +103,7 @@ Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene){
   }
 }
 
+// get the pointlights in the scene to determine the diffuse illumination
 Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene) {
     vec3 normVecToLight;
     vec3 lightPos;
@@ -127,6 +128,7 @@ Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Sce
     Color diffuse_color;
     float vec;
 
+    //for every light get the diffuse color of the nearest object
     for (auto i : scene.light_) {
     vec = dot(normalize(hit.direction_), normVecToLight);
     diff_col = i->getColor();
