@@ -31,11 +31,12 @@ struct Scene
         vector<shared_ptr<Shape>> shapes_;
         //shared_ptr<Composite> composite_;
         vector<shared_ptr<Light>> light_;
-        Camera camera_;
         vector<shared_ptr<Camera>> camera_p;
-
+        
+        shared_ptr<Camera> camera_;
 
 };
+
 
 /* shared_ptr<Material> findMaterial(string materialName, Scene& scene)
 {
@@ -134,6 +135,7 @@ static void read_sdf(string const& path, Scene& scene) {
                 
                 shared_ptr<Camera> camptr = make_shared<Camera>(camera);
                 scene.camera_p.push_back(camptr);
+                scene.camera_ = camptr;
                 cout << "camera loaded ";
                 cout << "fov : " << camera.getAngle() << "\n";
             }

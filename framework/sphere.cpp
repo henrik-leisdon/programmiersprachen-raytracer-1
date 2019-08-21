@@ -45,7 +45,8 @@ double Sphere::volume() const {
 Hit Sphere::intersect(Ray const &ray, float &t) {
     bool test;
     test = intersectRaySphere(ray.origin, normalize(ray.direction), center_ ,radius_*radius_, t);
-    Hit result{test, t, ray.origin, ray.direction};
+    vec3 hitpoint = vec3{ray.direction*t};
+    Hit result{test, t, hitpoint, ray.direction};
 
     return result;
 }
