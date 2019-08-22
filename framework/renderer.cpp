@@ -27,20 +27,9 @@ void Renderer::raycast()
   read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
-  //  for(auto i : scene.camera_p){
-  //      a = i->getAngle();
-
-  //      cout << "fov" << " " << a << "\n";
-  //      d = (width_/2.0f) / (tan(a/2.0f));
-  //      cout << "d " << " " << d << "\n";
-
-  // }
-
+  
   int a;
-  float d;
-  //Camera cam = scene.camera_;
-  //d = (width_/2.0f) / (tan(cam.getAngle()/2.0f));
-  d = (width_/2.0f) / (tan(70/2.0f*M_PI/180));
+  float d = (width_/2.0f) / (tan(70/2.0f*M_PI/180));
 
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
@@ -51,10 +40,8 @@ void Renderer::raycast()
       vec3 normalizedDirection{glm::normalize(direction)};
       Ray ray{origin, normalizedDirection};
 
-
       p.color = trace(ray, scene);
       write(p);
-      //cout << "height: " << x << " width: " <<y <<"\n";
     }
   }
   ppm_.save(filename_);
@@ -62,37 +49,45 @@ void Renderer::raycast()
 
 //trace the ray through the scene
 Color Renderer::trace(Ray const &ray, Scene const &scene) {
-    
     float distance = 0.0f;
     float dist = 100000.0f;
-
     shared_ptr<Shape> nearestObject;
     Hit h;
+    vec3 cut;
 
     Color col;
     Color amb_mat;
     Color amb_lig;
     Color final_ambiance;
+    Color spec;
 
     //get the nearest object
     for (auto i : scene.shapes_) {
         h = i->intersect(ray, distance);
+        //cout << "hit direct after intersect: "<< h.hitpoint_.x << " " << h.hitpoint_.y << " " << h.hitpoint_.z << "\n";
+                
         if (h.hit_ == true) {
             if (h.dist_ < dist || dist == 0) {//h.dist_ < dist || dist == 0.0f) {
                 dist = h.dist_; //h.dist_;
+                cut = h.hitpoint_;
+               // cout << "hit in for shapes: "<< h.hitpoint_.x << " " << h.hitpoint_.y << " " << h.hitpoint_.z << "\n";
+                
                 nearestObject = i;
             }
         }
     }
-
-    //get the light
+    //get the light/ color
     if (nearestObject != nullptr) {
+      //cout << "hit: " << h.hitpoint_.x << " "  << h.hitpoint_.y << " " << h.hitpoint_.z << "\n";
         //cout << nearestObject->getName() << " " << scene.shapes_.size() <<"\n";
+
         col = ptLight(h, ray, scene);
 
         amb_mat = nearestObject->getMaterial()->ka_;
         amb_lig = getAmbientIllumination(h, scene);
         final_ambiance = amb_mat*amb_lig;
+
+        //spec = calculateSpecular(h,nearestObject,scene, ray, cut);
 
         Color final = col+final_ambiance;
         return final;
@@ -128,7 +123,7 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene) {
         diffuse = getDiffuseIllumination(hit, normVecToLight, scene);
         specular = getSpecularIllumination(hit, ray, normVecToLight, scene);
     }
-    return diffuse;
+    return diffuse+specular;
 }
 
 
@@ -148,18 +143,76 @@ Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 normVecToLight, Sce
         diff_col = i->getColor();
         bright = i->getBrightness();
         ip = diff_col * bright;
-            for (auto j : scene.shapes_) {
-                kd = j->getMaterial()->kd_;
-                diffuse_color = ip * kd * vec;
-                }
+        for (auto j : scene.shapes_) {
+            kd = j->getMaterial()->kd_;
+            diffuse_color = ip * kd * vec;
         }
-    return diffuse_color;
     }
+    return diffuse_color;
+}
+
+/*Color Renderer::calculateSpecular(Hit const& hit, shared_ptr<Shape> nearestObject, Scene const& scene, Ray const& ray, vec3 const& hitpoint)
+{
+  Color specColor{0,0,0};
+  for(auto i : scene.light_) 
+  {
+    vec3 vecToLight = normalize(i->getPos()-hitpoint);
+    bool specular = true;
+    Hit lightObstacle;
+    for(auto j : scene.shapes_)
+    {
+      float distance;
+       lightObstacle = j->intersect(Ray{hitpoint,vecToLight}, distance);
+
+       if(lightObstacle.hit_)
+       {
+         specular = false;
+       }
+       
+    } 
+    if(specular)
+    {
+      float m = nearestObject->getMaterial()->m_;
+      vec3 v = normalize(scene.camera_->getPos()-hitpoint);
+     // cout << "hit: " << hit.hitpoint_.x << " " <<  hit.hitpoint_.y << " " << hit.hitpoint_.z << "\n";
+     // cout << "v coords: " << v.x << " " << v.y << " " << v.z << "\n";
+      vec3 r = dot(hit.direction_,vecToLight)*2.0f*hit.direction_-vecToLight;
+      float p = dot(v,r);
+      if(p<0)
+        p = -p;
+      float cos = pow(p,m);
+      Color ip = i->getColor()*i->getBrightness();
+      Color ks = nearestObject->getMaterial()->ks_;
+      Color specColor = ks*((m+2)/(2*M_PI))*cos*ip;
+    }
+  }
+  return specColor;
+  
+}*/
 
 
 Color Renderer::getSpecularIllumination(Hit const &hit, Ray const &ray, vec3 normVecToLight, Scene const &scene) {
+    Color is;
+    Color ks;
+    Color final_specular;
+    vec3 refl_angle;
+    vec3 ausf_angle;
+    float m;
 
+            refl_angle = 2.0f * glm::dot(normVecToLight, normalize(hit.direction_)) * normalize(hit.direction_);
+            ausf_angle = glm::normalize(ray.direction);
 
+                if (glm::dot(ausf_angle, refl_angle) > 0) {
+                    for (auto i : scene.light_) {
+                        is = i->getColor() * i->getBrightness();
+                        for (auto j : scene.shapes_) {
+                            m = j->getMaterial()->m_;
+                            ks = j->getMaterial()->ks_;
+                        }
+                    final_specular = ks * pow(glm::dot(refl_angle, ausf_angle), m) * is; //((m+2.0f)/(2.0f*M_PI))
+                }
+                return final_specular;
+                }
 }
 
 

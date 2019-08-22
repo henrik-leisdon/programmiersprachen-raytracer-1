@@ -29,6 +29,7 @@ public:
   Color getDiffuseIllumination(Hit const& hit, vec3 normVecToLight, Scene const& scene);
   Color getSpecularIllumination(Hit const& hit, Ray const& ray, vec3 normVecToLight, Scene const& scene);
   Color ptLight(Hit const& hit, Ray const& ray, Scene const& scene);
+  //Color calculateSpecular(Hit const& hit, shared_ptr<Shape> nearestObject, Scene const& scene, Ray const& ray, vec3 const& hitpoint);
   void write(Pixel const& p);
   
 
