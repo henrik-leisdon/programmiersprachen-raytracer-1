@@ -81,7 +81,8 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
         lightCol = ptLight(h, ray, scene, nearestObject);
         final_ambiance = getAmbientIllumination(h, scene, nearestObject);
 
-        Color final =  lightCol+final_ambiance;
+        Color final =  lightCol;
+        
         return final;
     } else {
         return Color{1.0f, 1.0f, 1.0f};
@@ -90,28 +91,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
 
 //get the ambient light in scene
 Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene, shared_ptr<Shape> const& nearestObject){
-/*
-    Color light_col;
-    int bright;
-    Color ip;
-    Color kd;
-    float vec;
-    Color ia;
-    vec3 normVecToLight;
 
-
-    Color ka = nearestObject->getMaterial()->ka_;
-    for(auto i : scene.light_) {
-       vec3 vecToLight = {i->getPos() - hit.hitpoint_};
-        normVecToLight = glm::normalize(vecToLight);
-        ia = i->getColorAmb();
-        vec = dot(normalize(hit.direction_), normVecToLight);
-        light_col = i->getColor();
-        bright = i->getBrightness();
-        ip = light_col*bright;
-    }
-    Color final_ambiance = ia*ka+ ip*kd*vec;
-*/
     Color final_ambiance = nearestObject->getMaterial()->ka_;
     return final_ambiance;
 }
@@ -123,22 +103,22 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
     vec3 normVecToLight;
     vec3 lightPos;
     vec3 vecToLight;
-    Color diffuse;
-    Color specular;
-
+    Color diffuse = Color{0.0,0.0,0.0};
+    Color specular= Color{0.0,0.0,0.0};
     for(auto i : scene.light_){
-        light = i;
         lightPos = i->getPos();
-        vecToLight = {lightPos.x-hit.hitpoint_.x, lightPos.y-hit.hitpoint_.y,lightPos.z-hit.hitpoint_.z};
+        vecToLight = {i->getPos()-hit.hitpoint_};
         normVecToLight = glm::normalize(vecToLight);
-        diffuse = getDiffuseIllumination(hit, normVecToLight, scene, nearestObject, light);
-        specular = getSpecularIllumination(hit, ray, normVecToLight, scene, nearestObject, light);
+        diffuse += getDiffuseIllumination(hit, normVecToLight, scene, nearestObject, i);
+        specular += getSpecularIllumination(hit, ray, normVecToLight, scene, nearestObject, i);
     }
+    //cout << "name: " << nearestObject->getName() << " diffuse: " << diffuse;
+        
     
-    return diffuse; //+specular
+    return diffuse;
 }
 
-
+//get diffuse color of the nearest object
 Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 const& normVecToLight, Scene const& scene, shared_ptr<Shape> const& nearestObject, shared_ptr<Light> const& light) {
 
     Color diff_col;
@@ -147,12 +127,12 @@ Color Renderer::getDiffuseIllumination(Hit const &hit , vec3 const& normVecToLig
     Color kd;
     Color diffuse_color;
     float vec;
-
-    //for every light get the diffuse color of the nearest object
-    //multiply the color of the diffuse light and its brightness with the material color of the object
-    vec = dot(normalize(hit.direction_), normVecToLight);
+    cout << nearestObject->getName() << " vector: " << hit.hitnormal_.x << " " << hit.hitnormal_.y << " " << hit.hitnormal_.z << " vecToLight: " << normVecToLight.x << " " << normVecToLight.y  << " " << normVecToLight.z << "\n";
+    vec = dot(normalize(hit.hitnormal_), normVecToLight);
+    
     ip = light->getColor()*light->getBrightness();
     kd = nearestObject->getMaterial()->kd_;
+   // cout << "diffuse: " << nearestObject->getName() << " ip: " << ip << " kd: " << kd << "\n"; 
     diffuse_color = ip*kd*vec;
     return diffuse_color;
 }

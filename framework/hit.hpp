@@ -15,6 +15,7 @@ struct Hit {
     float dist_;
     vec3 hitpoint_;
     vec3 direction_;
+    vec3 hitnormal_; //normale n zur Ebene
 };
 
 #endif
