@@ -1,5 +1,7 @@
 #include <glm-0.9.5.3/glm/glm.hpp>
 #include "box.hpp"
+#include "plane.hpp"
+#include <vector>
 
 using namespace std;
 using namespace glm;
@@ -49,88 +51,104 @@ double Box::volume() const {
 }
 
 Hit Box::intersect(Ray const &ray, float &t) {
+    float finalDistance;
+    bool test;
+    Hit result;
 
-    float ta[6];
-    bool test = false;
+    vec3 normDir;
+    vec3 cutting_pt;
+    vec3 closest_cut;
+    vec3 closest_normal;
+    vector<vec3> cutting_pts;
+    vector<vec3> cutting_norm;
 
-    //left
-    if (ray.direction.x != 0) {
-        ta[0] = (boxMin_.x - ray.origin.x) / normalize(ray.direction.x);  //normalize causes box to be as warped as sphere
-        vec3 left = ray.origin + ta[0] * ray.direction;
-        if ((left.y <= boxMax_.y && left.y >= boxMin_.y && left.z >= boxMax_.z && left.z <= boxMin_.z)) {
-            test = true;
-        } else {
-            test = false;
-            ta[0] = -1;
-        }
+    Plane planeOne   {boxMin_, vec3{-1,0,0} };
+    Plane planeTwo   {boxMin_, vec3{0,0,-1} };
+    Plane planeThree {boxMin_, vec3{0,-1,0} };
+    Plane planeFour  {boxMax_, vec3{1,0,0 } };
+    Plane planeFive  {boxMax_, vec3{0,0,1 } };
+    Plane planeSix   {boxMax_, vec3{0,1,0 } };
 
-        //right
-        ta[1] = (boxMax_.x - ray.origin.x) / normalize(ray.direction.x);
-        vec3 right = ray.origin + ta[1] * ray.direction;
-        if ((right.y <= boxMax_.y && right.y >= boxMin_.y && right.z >= boxMax_.z && right.z <= boxMin_.z)) {
-            test = true;
-        } else {
-            test = false;
-            ta[1] = -1;
-        }
-    }
+    float distance1 = (dot(planeOne.normal, planeOne.origin) - dot(ray.origin, planeOne.normal)) / (dot(ray.direction, planeOne.normal));
+    float distance2 = (dot(planeTwo.normal, planeTwo.origin) - dot(ray.origin, planeTwo.normal)) / (dot(ray.direction, planeTwo.normal));
+    float distance3 = (dot(planeThree.normal, planeThree.origin) - dot(ray.origin, planeThree.normal)) / (dot(ray.direction, planeThree.normal));
+    float distance4 = (dot(planeFour.normal, planeFour.origin) - dot(ray.origin, planeFour.normal)) / (dot(ray.direction, planeFour.normal));
+    float distance5 = (dot(planeFive.normal, planeFive.origin) - dot(ray.origin, planeFive.normal)) / (dot(ray.direction, planeFive.normal));
+    float distance6 = (dot(planeSix.normal, planeSix.origin) - dot(ray.origin, planeSix.normal)) / (dot(ray.direction, planeSix.normal));
 
-    //top
-    if (ray.direction.y != 0) {
-        ta[2] = (boxMax_.y - ray.origin.y) / normalize(ray.direction.y);
-        vec3 top = ray.origin + ta[2] * ray.direction;
-        if ((top.x <= boxMax_.x && top.x >= boxMin_.x && top.z >= boxMax_.z && top.z <= boxMin_.z)) {
-            test = true;
-        } else {
-            test = false;
-            ta[2] = -1;
-        }
-
-        //bottom
-        ta[3] = (boxMin_.y - ray.origin.y) / normalize(ray.direction.y);
-        vec3 bottom = ray.origin + ta[3] * ray.direction;
-        if ((bottom.x <= boxMax_.x && bottom.x >= boxMin_.x && bottom.z >= boxMax_.z && bottom.z <= boxMin_.z)) {
-            test = true;
-        } else {
-            test = false;
-            ta[3] = -1;
+    if(distance1 > 0) {
+        cutting_pt={ray.origin + distance1 * ray.direction};
+        if(cutting_pt.y < boxMax_.y && cutting_pt.y > boxMin_.y && cutting_pt.z < boxMax_.z && cutting_pt.z > boxMin_.z){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
         }
     }
 
-    //front
-    if (ray.direction.z != 0) {
-        ta[4] = (boxMin_.z - ray.origin.z) / normalize(ray.direction.z);
-        vec3 front = ray.origin + ta[4] * ray.direction;
-        if ((front.x <= boxMax_.x && front.x >= boxMin_.x && front.y <= boxMax_.y && front.y >= boxMin_.y)) {
-            test = true;
-        } else {
-            test = false;
-            ta[4] = -1;
-        }
-
-        //back
-        ta[5] = (boxMin_.z - ray.origin.z) / normalize(ray.direction.z);
-        vec3 back = ray.origin + ta[5] * ray.direction;
-        if ((back.x <= boxMax_.x && back.x >= boxMin_.x && back.y <= boxMax_.y && back.y >= boxMin_.y)) {
-            test = true;
-        } else {
-            test = false;
-            ta[5] = -1;
+    if(distance4 > 0) {
+        cutting_pt={ray.origin + distance4 * ray.direction};
+        if(cutting_pt.y < boxMax_.y && cutting_pt.y > boxMin_.y && cutting_pt.z < boxMax_.z && cutting_pt.z > boxMin_.z){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
         }
     }
 
-    float final_t;
-    for (int i = 0; i < 6; ++i) {
-        if (ta[i] > 0 && (ta[i] < final_t)) { //|| final_t == -1
-            final_t = ta[i];
-            test = true;
+    if(distance2 > 0) {
+        cutting_pt={ray.origin + distance2 * ray.direction};
+        if(cutting_pt.y < boxMax_.y && cutting_pt.y > boxMin_.y && cutting_pt.x < boxMax_.x && cutting_pt.x > boxMin_.x){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
         }
     }
 
+    if(distance5 > 0) {
+        cutting_pt={ray.origin + distance5 * ray.direction};
+        if(cutting_pt.y < boxMax_.y && cutting_pt.y > boxMin_.y && cutting_pt.x < boxMax_.x && cutting_pt.x > boxMin_.x){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
+        }
+    }
 
-    Hit result = {test, t, ray.origin, ray.direction}; //same result w/ t and final_t
-    return result;
+    if(distance3 > 0) {
+        cutting_pt={ray.origin + distance3 * ray.direction};
+        if(cutting_pt.x < boxMax_.x && cutting_pt.x > boxMin_.x && cutting_pt.z < boxMax_.z && cutting_pt.z > boxMin_.z){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
+        }
+    }
+
+    if(distance6 > 0) {
+        cutting_pt={ray.origin + distance6 * ray.direction};
+        if(cutting_pt.x < boxMax_.x && cutting_pt.x > boxMin_.x && cutting_pt.z < boxMax_.z && cutting_pt.z > boxMin_.z){
+            cutting_pts.push_back(cutting_pt);
+            cutting_norm.push_back(planeOne.normal);
+            test= true;
+        }
+    }
+
+    if(cutting_pts.size() > 0) {
+        closest_cut = cutting_pts.at(0);
+        closest_normal = cutting_norm.at(0);
+        for(auto i = 0; i < cutting_pts.size(); ++i){
+            if(glm::length(cutting_pts.at(i) - ray.origin) < glm::length(closest_cut - ray.origin)){
+                closest_cut = cutting_pts.at(i);
+                closest_normal = cutting_norm.at(i);
+                normDir = normalize(ray.direction);
+                test = true;
+            }
+        }
+
+        finalDistance = glm::length(cutting_pt - ray.origin);
+        result = {test, finalDistance, closest_cut, normDir, closest_normal};
+        return result;
+    }
+
 }
+
 
 ostream& Box::print(ostream &os) const {
     Shape::print(os);
@@ -144,3 +162,5 @@ ostream& Box::print(ostream &os) const {
 ostream& operator << (ostream& os, const Box& b) {
     return b.print(os);
 }
+
+
