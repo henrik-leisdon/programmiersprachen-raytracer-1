@@ -114,7 +114,7 @@ static void read_sdf(string const& path, Scene& scene) {
                 Color color = {stof(lineparts[6]), stof(lineparts[7]), stof(lineparts[8])};
                 Color ambColor = {stof(lineparts[9]), stof(lineparts[10]), stof(lineparts[11])};
 
-                Light light = Light(lineparts[2], postition, color, ambColor ,stoi(lineparts[12]));
+                Light light = Light{lineparts[2], postition, color, ambColor ,stoi(lineparts[12])};
                 shared_ptr<Light> lightPtr = make_shared<Light>(light);
                 scene.light_.push_back(lightPtr);
 

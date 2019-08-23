@@ -1,10 +1,10 @@
-define material red   1 0 0 1 0 0 1 0 0 20 0
-define material green 0 1 0 0 1 0 0 1 0 50 0
-define material blue  0 0 1 0 0 1 0 0 1 50 1
+define material red   1 0 0 0.4 0 0 1 0 0 20 0
+define material green 0 1 0 0 0.4 0 0 1 0 50 0
+define material blue  0 0 1 0 0 0.4 0 0 1 50 1
 define shape sphere centerSphere 0 0 -100 7 blue
 define shape sphere shadowtest 0 -30 -110 6 red
 define shape sphere bsphere 30 -100 -300 20 green
-define shape box bbox 20 0 -75 50 35 140 blue
+//define shape box bbox 20 0 -75 50 35 140 blue
 define shape box bbox2 -40 -20 -70 -20 -10 -250 red
-define light lighty -5 0 -10 1.0 1.0 1.0 0.4 0.4 0.4 8
+define light lighty -5 0 -10 1.0 1.0 1.0 0.3 0.3 0.3 2
 define camera cam 60.0 0.0 0.0 0.0
