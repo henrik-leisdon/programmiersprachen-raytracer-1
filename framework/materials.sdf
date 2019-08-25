@@ -3,8 +3,8 @@ define material green 0 1 0 0 1 0 0 1 0 50 0
 define material blue  0 0 1 0 0 1 0 0 1 50 1
 define shape sphere SphereBlue 20 -30 -100 10 blue
 define shape sphere SphereRed 30 10 -100 10 red
-//define shape sphere rightSphereGreen -30 -10 -100 10 green
-define light lighty 0 0 0 1.0 1.0 1.0 0.3 0.3 0.3 6
+define shape sphere rightSphereGreen -30 -10 -100 10 green
+define light lighty 0 0 -50 1.0 1.0 1.0 0.3 0.3 0.3 6
 
 define camera cam 60.0 0.0 0.0 0.0
 //define shape box bbox 20 0 -100 30 10 -140 blue

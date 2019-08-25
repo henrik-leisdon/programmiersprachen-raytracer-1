@@ -52,10 +52,15 @@ Hit Sphere::intersect(Ray const &ray, float &t) {
         vec3 hitpoint = vec3{ray.origin+normDir*t};
         vec3 normToShape = vec3{hitpoint-center_};
         //cout << getName() << " normal in intersect: " << normToShape.x << " " << normToShape.y << " " << normToShape.z <<  "\n";
-        
+        result.hit_ = true;
+        result.hitnormal_ = normToShape;
+        result.hitpoint_ = hitpoint;
+        result.dist_ = t;
+        result.direction_ = normDir;
+
         
 
-        result(intersect, t, hitpoint, normDir, normToShape);
+        //result(intersect, t, hitpoint, normDir, normToShape);
         return result;
     }
     else{

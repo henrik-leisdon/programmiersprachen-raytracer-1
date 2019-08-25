@@ -25,8 +25,8 @@ void Renderer::raycast()
   //Camera cam;
   std::size_t const checker_pattern_size = 20;
   //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
   
   int a;
@@ -54,6 +54,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
     float dist = 1000000.0f;
     shared_ptr<Shape> nearestObject;
     Hit h;
+    Hit hit;
     vec3 normHit;
     vec3 hitpoint;
     
@@ -61,16 +62,21 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
         h = i->intersect(ray, distance);          
         if (h.hit_ == true) {
             if (h.dist_ < dist || dist == 0) {
-                dist = h.dist_; 
-                normHit = h.hitnormal_;
+                hit.dist_ = h.dist_; 
+                hit.hitnormal_ = h.hitnormal_;
                 nearestObject = i;
-                hitpoint = h.hitpoint_;
+                hit.hitpoint_ = h.hitpoint_;
+                hit.direction_ = h.direction_;
+                hit.hit_ = h.hit_;
+                
             }
         }
     }
     if (nearestObject != nullptr) {
-        Color lightCol = ptLight(h, normHit, ray, scene, nearestObject);
-        Color final_ambiance = getAmbientIllumination(h, scene, nearestObject);
+        //cout << "hitpoint.h" << h.hitpoint_.x << " " << h.hitpoint_.y << " " << h.hitpoint_.z << endl;
+        //cout << "hitpoint  " << hitpoint.x << " " << hitpoint.y << " "  << hitpoint.z << endl;
+        Color lightCol = ptLight(hit, hit.hitnormal_, ray, scene, nearestObject);
+        Color final_ambiance = getAmbientIllumination(hit, scene, nearestObject);
         Color final =  lightCol;
         
         return final;
@@ -118,7 +124,9 @@ Color Renderer::getDiffuseIllumination(Hit const &hit ,vec3 const& normHit, Scen
     Color kd = nearestObject->getMaterial()->kd_;
     Color diffuse_color = ip*kd*vec;
     */
+    //cout << "hitpoint: " << hit.hitpoint_.x << " " << hit.hitpoint_.y << " "<< hit.hitpoint_.z << " \n";
     vec3 vecToLight = {light->getPos()-hit.hitpoint_};
+
     //cout << "normal hitpoint: " << hitpoint.x << " " << hitpoint.y << " " << hitpoint.z << endl;
     vec3 normVecToLight = glm::normalize(vecToLight);
     Color ip = light->getColor()*light->getBrightness();
