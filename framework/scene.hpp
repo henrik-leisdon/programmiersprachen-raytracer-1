@@ -13,6 +13,7 @@
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "light.hpp"
+#include "ambient.hpp"
 //#include "composite.hpp"
 
 using namespace std;
@@ -32,7 +33,7 @@ struct Scene
         //shared_ptr<Composite> composite_;
         vector<shared_ptr<Light>> light_;
         vector<shared_ptr<Camera>> camera_p;
-        
+        Ambient ambient_;
         shared_ptr<Camera> camera_;
 
 };
@@ -138,6 +139,12 @@ static void read_sdf(string const& path, Scene& scene) {
                 scene.camera_ = camptr;
                 cout << "camera loaded ";
                 cout << "fov : " << camera.getAngle() << "\n";
+            }
+
+            if(lineparts[1] == "ambient") {
+                Color amb = Color{stof(lineparts[2]), stof(lineparts[3]), stof(lineparts[4])};
+                Ambient ambient = Ambient{amb};
+                scene.ambient_ = ambient;
             }
 
         }

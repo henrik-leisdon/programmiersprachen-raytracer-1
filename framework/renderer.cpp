@@ -74,8 +74,8 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
     if (nearestObject != nullptr) {
       
         Color lightCol = ptLight(hit, ray, scene, nearestObject);
-        Color final_ambiance = getAmbientIllumination(hit, scene, nearestObject);
-        Color final =  lightCol;
+        Color ambiance = getAmbientIllumination(hit, scene, nearestObject);
+        Color final =  lightCol+ambiance;
         
         return final;
     } else {
@@ -86,7 +86,9 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
 //get the ambient light in scene
 Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene, shared_ptr<Shape> const& nearestObject){
 
-    Color final_ambiance = nearestObject->getMaterial()->ka_; //ambiente mal ka_;
+    Ambient ambient = scene.ambient_;
+    Color amb = ambient.amb_; 
+    Color final_ambiance = amb*nearestObject->getMaterial()->ka_; //ambiente mal ka_;
     return final_ambiance;
 }
 
@@ -99,10 +101,31 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
     Color specular= Color{0.0,0.0,0.0};
     for(auto i : scene.light_){
         vec3 vecToLight = {i->getPos()-hit.hitpoint_};
-        
+        float distance;
+        Hit h;
+        Ray rayToLight = {hit.hitpoint_+0.01f, normalize(vecToLight)};
+        float lightDistance = glm::distance(i->getPos(),hit.hitpoint_);
+        cout << "lightDist" << lightDistance << endl;
+        bool shadow = false;
+    
+        for (auto i : scene.shapes_) {
+          h = i->intersect(rayToLight, distance);          
+          if (h.hit_ == true) {
+            cout << "object dist: " << distance << endl;
+              if (distance < lightDistance) {
+                shadow = true;
+              }
+          }
+        }
+        if(shadow == false)
+        {
+          
+       
+        }
         diffuse += getDiffuseIllumination(hit, scene, nearestObject, i);
-        specular += getSpecularIllumination(hit, ray, scene, nearestObject, i);
-       // cout << "spec: " << specular << endl;
+          specular += getSpecularIllumination(hit, ray, scene, nearestObject, i);
+
+        // cout << "spec: " << specular << endl;
     }
         
     
