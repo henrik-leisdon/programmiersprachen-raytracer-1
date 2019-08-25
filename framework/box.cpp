@@ -144,6 +144,7 @@ Hit Box::intersect(Ray const &ray, float &t) {
 
         finalDistance = glm::length(cutting_pt - ray.origin);
         result = {test, finalDistance, closest_cut, normDir, closest_normal};
+        //cout << "closest cut: " << closest_cut.x << " " << closest_cut.y << " " << closest_cut.z << "\n";
         return result;
     }
 
