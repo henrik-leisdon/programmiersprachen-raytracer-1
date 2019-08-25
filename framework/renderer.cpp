@@ -111,7 +111,7 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
         for (auto i : scene.shapes_) {
           h = i->intersect(rayToLight, distance);          
           if (h.hit_ == true) {
-            cout << "object dist: " << distance << endl;
+            //cout << "object dist: " << distance << endl;
               if (distance < lightDistance) {
                 shadow = true;
               }
