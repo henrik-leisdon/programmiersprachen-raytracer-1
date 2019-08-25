@@ -44,6 +44,7 @@ double Sphere::volume() const {
 
 Hit Sphere::intersect(Ray const &ray, float &t) {
     bool intersect;
+    Hit result;
     vec3 normDir = normalize(ray.direction);
     intersect = intersectRaySphere(ray.origin, normalize(ray.direction), center_ ,radius_*radius_, t);
     if(intersect)
@@ -51,7 +52,10 @@ Hit Sphere::intersect(Ray const &ray, float &t) {
         vec3 hitpoint = vec3{ray.origin+normDir*t};
         vec3 normToShape = vec3{hitpoint-center_};
         //cout << getName() << " normal in intersect: " << normToShape.x << " " << normToShape.y << " " << normToShape.z <<  "\n";
-        const Hit result(intersect, t, hitpoint, normDir, normToShape);
+        
+        
+
+        result(intersect, t, hitpoint, normDir, normToShape);
         return result;
     }
     else{
