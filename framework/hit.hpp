@@ -4,10 +4,13 @@
 #include <iostream>
 #include <glm/vec3.hpp>
 #include <memory>
+//#include "shape.hpp"
 #include "color.hpp"
 
 using namespace std;
 using namespace glm;
+
+//class Shape;
 
 struct Hit {
 
