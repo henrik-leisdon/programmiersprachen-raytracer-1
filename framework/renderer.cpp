@@ -35,7 +35,7 @@ void Renderer::raycast()
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
-
+      //cout << "x: " << x << " y " << y <<endl;
       vec3 origin{0.0f,0.0f, 0.0f};
       vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
       vec3 normalizedDirection{glm::normalize(direction)};
@@ -75,7 +75,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
       
         Color lightCol = ptLight(hit, ray, scene, nearestObject);
         Color ambiance = getAmbientIllumination(hit, scene, nearestObject);
-        Color final =  lightCol+ambiance;
+        Color final =  ambiance+lightCol;
         
         return final;
     } else {
@@ -105,7 +105,7 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
         Hit h;
         Ray rayToLight = {hit.hitpoint_+0.01f, normalize(vecToLight)};
         float lightDistance = glm::distance(i->getPos(),hit.hitpoint_);
-        cout << "lightDist" << lightDistance << endl;
+        //cout << "lightDist" << lightDistance << endl;
         bool shadow = false;
     
         for (auto i : scene.shapes_) {
@@ -129,7 +129,7 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
     }
         
     
-    return diffuse + specular;
+    return diffuse;
 }
 
 //get diffuse color of the nearest object

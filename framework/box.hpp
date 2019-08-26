@@ -23,6 +23,7 @@ class Box : public Shape
         double area() const override;
         double volume() const override;
         Hit intersect(Ray const& ray, float &t) override;
+        Hit surfacehit(Ray const& ray, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4)const;
 
         ostream& print(ostream& os) const override;
        

@@ -2,14 +2,14 @@ define material red   1 0 0 1 0 0 1 0 0 20
 define material green 0 1 0 0 1 0 0 1 0 10
 define material blue  0 0 1 0 0 1 0 0 1 50
 //define shape sphere SphereBlue 20 -20 -100 10 blue
-//define shape sphere SphereRed 30 10 -100 10 red
+define shape sphere SphereRed 30 10 -100 10 red
 //define shape sphere rightSphereGreen -30 -10 -100 10 green
 
-define light lighty 50 50 0 1.0 1.0 1.0 0.3 0.3 0.3 6
+define light lighty 0 0 100 1.0 1.0 1.0 0.3 0.3 0.3 6
 //define light lighty2 20 100 -110 1.0 1.0 1.0 0.3 0.3 0.3 2
 
 define camera cam 60.0 0.0 0.0 0.0
-//define shape box bbox 20 0 -100 30 10 -140 blue
-define shape box bbox2 -25 -20 -100 -20 -5 -110 red
+define shape box bbox -30 20 -100 -20 30 -150 green
+define shape box bbox2 20 -20 -100 30 -5 -110 red
 
 define ambient 0.1 0.1 0.1 
