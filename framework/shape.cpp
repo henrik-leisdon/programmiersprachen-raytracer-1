@@ -6,7 +6,9 @@ using namespace glm;
 #define STANDARD_MATRIX mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
 #define TRANSLATION_MAT mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{trans.x, trans.y, trans.z, 1.0f}};
 #define SCALING_MAT     mat4x4{vec4{scale.x, 0.0f, 0.0f, 0.0f}, vec4{0.0f, scale.y, 0.0f, 0.0f}, vec4{0.0f, 0.0f, scale.z, 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-
+#define X_ROTATION_MAT  mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, cos(phi), sin(phi), 0.0f}, vec4{0.0f, -sin(phi), cos(phi), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+#define Y_ROTATION_MAT  mat4x4{vec4{cos(phi), 0.0f, -sin(phi), 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{sin(phi), 0.0f, cos(phi), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+#define Z_ROTATION_MAT  mat4x4{vec4{cos(phi), sin(phi), 0.0f, 0.0f}, vec4{-sin(phi), cos(phi), 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
 
 
 Shape::Shape():
@@ -52,25 +54,40 @@ ostream& Shape::print(ostream& os) const
 
 void Shape::translate(vec3 const &trans) {
     translate_=TRANSLATION_MAT;
-    world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
+    world_transform_=translate_*world_transform_;
+    inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
 }
 
 void Shape::scale(vec3 const &scale) {
     scale_=SCALING_MAT;
-    world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
+    world_transform_=scale_*world_transform_;
+    inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
 }
 
-void Shape::rotate(float phi, vec3 const &rotate) {
-    float rad = phi*(M_PI/180);
-    rotate_=glm::rotate(mat4(1.0), rad, rotate);
-    world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
+void Shape::rotateX(float phi) {
+    rotate_=X_ROTATION_MAT;
+    world_transform_=rotate_*world_transform_;
+    inverse_world_transform_=inverse(world_transform_);
+
+    isTransformed_=true;
+}
+
+void Shape::rotateY(float phi) {
+    rotate_=Y_ROTATION_MAT;
+    world_transform_=rotate_*world_transform_;
+    inverse_world_transform_=inverse(world_transform_);
+
+    isTransformed_=true;
+}
+
+void Shape::rotateZ(float phi) {
+    rotate_=Z_ROTATION_MAT;
+    world_transform_=rotate_*world_transform_;
+    inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
 }

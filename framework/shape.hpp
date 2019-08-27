@@ -35,9 +35,13 @@ class Shape
 
         virtual void translate(vec3 const& vec);
         virtual void scale(vec3 const& vec);
-        virtual void rotate(float phi, vec3 const& vec);
+        virtual void rotateX(float phi);
+        virtual void rotateY(float phi);
+        virtual void rotateZ(float phi);
 
-            protected:
+
+
+protected:
             string name_;
             shared_ptr<Material> material_;
 

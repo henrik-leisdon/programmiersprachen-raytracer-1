@@ -21,4 +21,4 @@ define camera cam    45.0   0 0 0     0 0 -1      0 1 0
 define ambient 0.1 0.1 0.1 
 
 define transform mcBoxRed translate -10 -10 -10
-define transform SphereRed translate -10 -10 -10
+define transform SphereRed scale 20 80 80

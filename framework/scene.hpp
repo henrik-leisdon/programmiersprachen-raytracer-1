@@ -163,12 +163,25 @@ static void read_sdf(string const& path, Scene& scene) {
 
                         }
 
-                        if(keyword == "rotate") {
-                            cout << "found rotation " << "\n";
-                            vec3 rotate = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
-                            float phi = {stof(lineparts[7])};
+                        if(keyword == "rotateX") {
+                            cout << "found rotation, x-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
 
-                            transform->rotate(phi, rotate);
+                            transform->rotateX(phi);
+                        }
+
+                        if(keyword == "rotateY") {
+                            cout << "found rotation, y-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
+
+                            transform->rotateY(phi);
+                        }
+
+                        if(keyword == "rotateZ") {
+                            cout << "found rotation, z-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
+
+                            transform->rotateZ(phi);
                         }
 
                         if(keyword == "scale") {
