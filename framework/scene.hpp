@@ -131,8 +131,10 @@ static void read_sdf(string const& path, Scene& scene) {
 
             if (lineparts[1] == "camera") {
                 vec3 position = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
+                vec3 direction = {stof(lineparts[7]), stof(lineparts[8]), stof(lineparts[9])};
+                vec3 upVec = {stof(lineparts[10]), stof(lineparts[11]), stof(lineparts[12])};
                 float fov = {stof(lineparts[3])};
-                Camera camera = Camera((lineparts[2]), fov, position);
+                Camera camera = Camera((lineparts[2]), fov, position, direction, upVec);
                 
                 shared_ptr<Camera> camptr = make_shared<Camera>(camera);
                 scene.camera_p.push_back(camptr);

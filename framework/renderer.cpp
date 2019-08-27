@@ -28,15 +28,15 @@ void Renderer::raycast()
   //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
-  
+  shared_ptr<Camera> cam = scene.camera_;
   int a;
-  float d = (width_/2.0f) / (tan(45/2.0f*M_PI/180));
+  float d = (width_/2.0f) / (tan(cam->getAngle()/2.0f*M_PI/180));
 
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
       //cout << "x: " << x << " y " << y <<endl;
-      vec3 origin{0.0f,0.0f, 0.0f};
+      vec3 origin = cam->getPos();
       vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
       vec3 normalizedDirection{glm::normalize(direction)};
       Ray ray{origin, normalizedDirection};
@@ -58,15 +58,19 @@ Color Renderer::trace(Ray const &ray, Scene const &scene) {
  
     
     for (auto i : scene.shapes_) {
-        h = i->intersect(ray, distance);          
+        h = i->intersect(ray, distance);    
+              
         if (h.hit_ == true) {
-            if (h.dist_ < dist || dist == 0) {
+          //cout << nearestObject->getName() << " dist: " << h.dist_ << " old nearest dist: " << dist <<endl;
+            if (h.dist_ < dist) {
+                dist = h.dist_;
                 hit.dist_ = h.dist_; 
                 hit.hitnormal_ = h.hitnormal_;
                 nearestObject = i;
                 hit.hitpoint_ = h.hitpoint_;
                 hit.direction_ = h.direction_;
                 hit.hit_ = h.hit_;
+                
                 
             }
         }
@@ -104,43 +108,47 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
         float distance;
         Hit h;
         Ray rayToLight = {hit.hitpoint_+0.01f, normalize(vecToLight)};
+        
         float lightDistance = glm::distance(i->getPos(),hit.hitpoint_);
-        //cout << "lightDist" << lightDistance << endl;
         bool shadow = false;
     
         for (auto i : scene.shapes_) {
           h = i->intersect(rayToLight, distance);          
-          if (h.hit_ == true) {
-            //cout << "object dist: " << distance << endl;
-              if (distance < lightDistance) {
-                shadow = true;
+          if (h.hit_ == true && nearestObject!=i && h.dist_>0.0f) {
+              if (h.dist_ < lightDistance) {
+                 shadow = true;
               }
           }
         }
         if(shadow == false)
         {
-          
+          diffuse += getDiffuseIllumination(hit, scene, nearestObject, i);
+          specular += getSpecularIllumination(hit, ray, scene, nearestObject, i);
        
         }
-        diffuse += getDiffuseIllumination(hit, scene, nearestObject, i);
-          specular += getSpecularIllumination(hit, ray, scene, nearestObject, i);
+        
 
         // cout << "spec: " << specular << endl;
     }
         
     
-    return diffuse;
+    return diffuse + specular;
 }
 
 //get diffuse color of the nearest object
 Color Renderer::getDiffuseIllumination(Hit const &hit ,Scene const& scene, shared_ptr<Shape> const& nearestObject, shared_ptr<Light> const& light) {
 
     vec3 vecToLight = {light->getPos()-hit.hitpoint_};
+    //cout << "hitpoint: " << hit.hitpoint_.x << " " << hit.hitpoint_.y << " " << hit.hitpoint_.z << endl;
+    //cout << "vec to light: " << vecToLight.x << " " << vecToLight.y << " " << vecToLight.z << endl;
     vec3 normVecToLight = glm::normalize(vecToLight);
     
     Color ip = light->getColor()*light->getBrightness();
     Color kd = nearestObject->getMaterial()->kd_;
+    //cout << "vec normal: " << hit.hitnormal_.x << " " << hit.hitnormal_.y << " " << hit.hitnormal_.z 
+    //<< " normVecToLight "  << normVecToLight.x << " " << normVecToLight.y << " " << normVecToLight.z << " " ;
     float vec = dot(normalize(hit.hitnormal_), normVecToLight);
+    //cout << " vec: " << vec << endl;
     
     return ip*kd*vec;
 }

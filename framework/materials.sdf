@@ -1,15 +1,21 @@
-define material red   1 0 0 1 0 0 1 0 0 20
-define material green 0 1 0 0 1 0 0 1 0 10
-define material blue  0 0 1 0 0 1 0 0 1 50
-//define shape sphere SphereBlue 20 -20 -100 10 blue
-define shape sphere SphereRed 30 10 -100 10 red
-//define shape sphere rightSphereGreen -30 -10 -100 10 green
+#material       color   ambiant diffuse specular  m
 
-define light lighty 0 0 100 1.0 1.0 1.0 0.3 0.3 0.3 6
-//define light lighty2 20 100 -110 1.0 1.0 1.0 0.3 0.3 0.3 2
+define material red     1 0 0   1 0 0    1 0 0    20
+define material green   0 1 0   0 1 0    0 1 0    10
+define material blue    0 0 1   0 0 1    0 0 1    70
 
-define camera cam 60.0 0.0 0.0 0.0
-define shape box bbox -30 20 -100 -20 30 -150 green
-define shape box bbox2 20 -20 -100 30 -5 -110 red
+
+define shape sphere SphereBlue 20 -20 -150 20 blue
+define shape sphere SphereRed 30 10 -150 10 red
+define shape sphere rightSphereGreen -15 10 -80 5 green
+
+define shape box boxyGreen -30 0 -100 -20 10 -150 green
+define shape box mcBoxRed 20 -20 -100 30 -5 -110 red
+
+define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
+//define light lighty2 0 -50 -110 1.0 1.0 1.0 0.3 0.3 0.3 1
+
+#camera       name   fov:   eye       dir         up (wo ist oben)
+define camera cam    45.0   0 0 0     0 0 -1      0 1 0 
 
 define ambient 0.1 0.1 0.1 

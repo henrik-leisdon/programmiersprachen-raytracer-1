@@ -14,7 +14,7 @@ class Camera
 {
     public:
         Camera();
-        Camera(string const& name, float fov, vec3 const& pos);
+        Camera(string const& name, float fov, vec3 const& pos, vec3 const& dir, vec3 const& upVec);
 
 
         float getAngle();
@@ -25,9 +25,9 @@ class Camera
     private:
         string name_;
         vec3 pos_;
-        vec3 up_; //needed vectors for orthonormal base
-        vec3 dir_;
-        float angle_;
+        vec3 up_; //vector to determine where is the top of the camera
+        vec3 dir_; // direction the vector is facing
+        float angle_; //field of view (bad naming so far)
         float dist_; //to pixel canvas
 };
 
