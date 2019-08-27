@@ -3,6 +3,10 @@
 
 #include <memory>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <math.h>
 #include <string>
 #include <hit.hpp>
@@ -29,9 +33,20 @@ class Shape
         virtual Hit intersect (Ray const& ray, float& t) = 0;
         virtual ostream& print (ostream& os) const;
 
-        private:
+        virtual void translate(vec3 const& vec);
+        virtual void scale(vec3 const& vec);
+        virtual void rotate(float phi, vec3 const& vec);
+
+            protected:
             string name_;
             shared_ptr<Material> material_;
+
+            bool isTransformed_;
+            mat4 world_transform_;
+            mat4 inverse_world_transform_;
+            mat4 translate_;
+            mat4 scale_;
+            mat4 rotate_;
 
 };
 

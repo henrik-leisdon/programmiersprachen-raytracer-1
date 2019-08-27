@@ -42,9 +42,18 @@ double Sphere::volume() const {
     return volume;
 }
 
-Hit Sphere::intersect(Ray const &ray, float &t) {
+Hit Sphere::intersect(Ray const &firstRay, float &t) {
     bool intersect;
     Hit result;
+
+    Ray ray={firstRay.origin, firstRay.direction};
+
+    if(isTransformed_){
+        ray = transformRay(inverse_world_transform_, ray);
+    } else {
+        ray = firstRay;
+    }
+
     vec3 normDir = normalize(ray.direction);
     intersect = intersectRaySphere(ray.origin, normalize(ray.direction), center_ ,radius_*radius_, t);
     if(intersect)
@@ -57,7 +66,11 @@ Hit Sphere::intersect(Ray const &ray, float &t) {
         result.hitpoint_ = hitpoint;
         result.dist_ = t;
         result.direction_ = normDir;
+        if(isTransformed_){
+            result.hitnormal_ = vec3(mat3(transpose(inverse_world_transform_))*result.hitnormal_);
+            result.hitpoint_ = vec3(world_transform_*vec4(result.hitpoint_,1));
 
+        }
         
 
         //result(intersect, t, hitpoint, normDir, normToShape);
