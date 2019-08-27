@@ -149,6 +149,39 @@ static void read_sdf(string const& path, Scene& scene) {
                 scene.ambient_ = ambient;
             }
 
+            if(lineparts[1] == "transform") {
+                string name = lineparts[2];
+                string keyword = lineparts[3];
+                cout << "transformation found " << "\n";
+                for (auto transform : scene.shapes_) {
+                    if (name == transform->getName()) {
+                        if(keyword == "translate") {
+                            cout << "found translation " << "\n";
+                            vec3 trans = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
+
+                            transform->translate(trans);
+
+                        }
+
+                        if(keyword == "rotate") {
+                            cout << "found rotation " << "\n";
+                            vec3 rotate = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
+                            float phi = {stof(lineparts[7])};
+
+                            transform->rotate(phi, rotate);
+                        }
+
+                        if(keyword == "scale") {
+                            cout << "found scaling " << "\n";
+                            vec3 scale = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
+
+                            transform->scale(scale);
+                        }
+                    }
+                }
+
+            }
+
         }
     }
 

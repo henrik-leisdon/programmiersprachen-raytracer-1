@@ -19,3 +19,6 @@ define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
 define camera cam    45.0   0 0 0     0 0 -1      0 1 0 
 
 define ambient 0.1 0.1 0.1 
+
+define transform mcBoxRed translate -10 -10 -10
+define transform SphereRed translate -10 -10 -10

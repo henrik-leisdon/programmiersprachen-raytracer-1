@@ -53,7 +53,7 @@ ostream& Shape::print(ostream& os) const
 void Shape::translate(vec3 const &trans) {
     translate_=TRANSLATION_MAT;
     world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=world_transform_*inverse(world_transform_);
+    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
 
     isTransformed_=true;
 }
@@ -61,7 +61,7 @@ void Shape::translate(vec3 const &trans) {
 void Shape::scale(vec3 const &scale) {
     scale_=SCALING_MAT;
     world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=world_transform_*inverse(world_transform_);
+    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
 
     isTransformed_=true;
 }
@@ -70,7 +70,7 @@ void Shape::rotate(float phi, vec3 const &rotate) {
     float rad = phi*(M_PI/180);
     rotate_=glm::rotate(mat4(1.0), rad, rotate);
     world_transform_=translate_*scale_*rotate_;
-    inverse_world_transform_=world_transform_*inverse(world_transform_);
+    inverse_world_transform_=inverse_world_transform_*inverse(world_transform_);
 
     isTransformed_=true;
 }

@@ -50,7 +50,13 @@ double Box::volume() const {
     return volume;
 }
 
-Hit Box::intersect(Ray const &ray, float &t) {
+Hit Box::intersect(Ray const &firstRay, float &t) {
+Ray ray;
+if(isTransformed_){
+    ray = transformRay(inverse_world_transform_, firstRay);
+} else {
+    ray = firstRay;
+}
     
 if (boxMin_.x > boxMax_.x) std::swap(boxMin_.x, boxMax_.x);
 if (boxMin_.y > boxMax_.y) std::swap(boxMin_.y, boxMax_.y);
@@ -167,151 +173,20 @@ Hit closestHit;
      }
  }
 
+if(isTransformed_){
+    vec4 transformHit = world_transform_ * vec4{closestHit.hitpoint_, 1};
+    closestHit.hitpoint_ = vec3{transformHit.x, transformHit.y, transformHit.z};
+
+    vec4 transformNormal = glm::normalize(transpose(inverse_world_transform_)*vec4{closestHit.hitnormal_, 0});
+    closestHit.hitnormal_ = vec3{transformNormal.x, transformNormal.y, transformNormal.z};
+
+    //closestHit.hitnormal_ = vec3(mat3(transpose(inverse_world_transform_))* closestHit.hitnormal_);
+}
+
 return closestHit;
 
 }
 
-
-/*
-
-
-    Hit result;
-    bool test;
-    vec3 bounds[2];
-    int sign[3];
-    
-    float distance;
-
-    vector<vec3> cut_pts;
-    vector<vec3> cut_norms;
-
-    bounds[0] = boxMin_;
-    bounds[1] = boxMax_;
-
-    vec3 inverseDirection = {1.0f/ray.direction.x , 1.0f/ray.direction.y , 1.0f/ray.direction.z};
-
-    sign[0] = (inverseDirection.x < 0);
-    sign[1] = (inverseDirection.y < 0);
-    sign[2] = (inverseDirection.z < 0);
-
-    //distances
-    float txMin, txMax, tyMin, tyMax, tzMin, tzMax;
-    txMin = (bounds[sign[0]].x - ray.origin.x)*inverseDirection.x;
-    txMax = (bounds[1 - sign[0]].x - ray.origin.x)*inverseDirection.x;
-
-    tyMin = (bounds[sign[1]].y - ray.origin.y)*inverseDirection.y;
-    tyMax = (bounds[1 - sign[1]].y - ray.origin.y)*inverseDirection.y;
-
-    tzMin = (bounds[sign[2]].z - ray.origin.z)*inverseDirection.z;
-    tzMax = (bounds[1 - sign[2]].z - ray.origin.z)*inverseDirection.z;
-
-    cout << "distances: " << "txMin: " << txMin << " txMax: " << txMax << " tyMin: " << tyMin << " tyMax: " << tyMax << " tzMin: " << tzMin << " tzMax: " << tzMax << endl;
-
-    if( (txMin > tyMax) || (tyMin > txMax)) { test = false;}
-    if( tyMin > txMin) { txMin = tyMin;}
-    if( tyMax < txMax) { txMax = tyMax;}
-
-    if( (txMin > tzMax) || (tzMin > txMax)) { test = false;}
-    if( tzMin > txMin) { txMin = tzMin;}
-    if( tzMax < txMax) { txMax = tzMax;}
-
-    if( (txMin >= t) && (txMax <= t)) { test = true; }
-
-    vec3 cut_pt;
-    vec3 cut_norm;
-
-    if(txMin != 0){
-        cut_pt = ray.origin + txMin * ray.direction;
-        cut_norm = {-1.0f, 0.0f, 0.0f};
-        if(cut_pt.y <= boxMax_.y && cut_pt.y >= boxMin_.y && cut_pt.z <= boxMax_.z && cut_pt.z >= boxMin_.z) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    if(txMax != 0){
-        cut_pt = ray.origin + txMax * ray.direction;
-        cut_norm = {1.0f, 0.0f ,0.0f};
-        if(cut_pt.y <= boxMax_.y && cut_pt.y >= boxMin_.y && cut_pt.z <= boxMax_.z && cut_pt.z >= boxMin_.z) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    if(tyMin != 0){
-        cut_pt = ray.origin + tyMin * ray.direction;
-        cut_norm = {0.0f, -1.0f, 0.0f};
-        if(cut_pt.x <= boxMax_.x && cut_pt.x >= boxMin_.x && cut_pt.z <= boxMax_.z && cut_pt.z >= boxMin_.z) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    if(tyMax != 0){
-        cut_pt = ray.origin + tyMax * ray.direction;
-        cut_norm = {0.0f, 1.0f, 0.0f};
-       if(cut_pt.x <= boxMax_.x && cut_pt.x >= boxMin_.x && cut_pt.z <= boxMax_.z && cut_pt.z >= boxMin_.z) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    if(tzMin != 0){
-        cut_pt = ray.origin + tzMin * ray.direction;
-        cut_norm = {0.0f, 0.0f, -1.0f};
-       if(cut_pt.x <= boxMax_.x && cut_pt.x >= boxMin_.x && cut_pt.y <= boxMax_.y && cut_pt.y >= boxMin_.y) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    if(tzMax != 0){
-        cut_pt = ray.origin + tzMax * ray.direction;
-        cut_norm = {0.0f, 0.0f, 1.0f};
-        if(cut_pt.x <= boxMax_.x && cut_pt.x >= boxMin_.x && cut_pt.y <= boxMax_.y && cut_pt.y >= boxMin_.y) {
-            cut_pts.push_back(cut_pt);
-            cut_norms.push_back(cut_norm);
-            test = true;
-        }
-    }
-
-    vec3 closest_cut;
-    vec3 closest_norm;
-
-    if(cut_pts.size() > 0){
-        closest_cut = cut_pts.at(0);
-        closest_norm = cut_norms.at(0);
-        //closest_norm = cut_norms.at(0);
-        for(auto i = 0; i < cut_pts.size(); ++i){
-            if(glm::length(cut_pts.at(i) - ray.origin) < glm::length(closest_cut - ray.origin)){
-                closest_cut = cut_pts.at(i);
-                closest_norm = cut_norms.at(i);
-               // cout << "----------------- got normal ----------------" << closest_norm.x << " " << closest_norm.y << " " << closest_norm.z << "\n";
-            }
-        }
-
-        vec3 directionR = ray.direction;
-        vec3 normDirection = glm::normalize(directionR);
-
-        distance = glm::length(cut_pt - ray.origin);
-        result={test, distance, cut_pt, normDirection, closest_norm};
-
-       // cout << "test " << test << "\n";
-       // cout << "distance " << distance << "\n";
-       // cout << "hitpoint " << cut_pt.x << " " << cut_pt.y << " " << cut_pt.z << "\n";
-       // cout << "direction " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z << "\n";
-       // cout << "normalized direction " << normDirection.x << " " << normDirection.y << " " << normDirection.z << "\n";
-       // cout << "normal " << closest_norm.x << " " << closest_norm.y << " " << closest_norm.z << "\n";
-        return result;
-    }
-
-}
-*/
 ostream& Box::print(ostream &os) const {
     Shape::print(os);
     os
