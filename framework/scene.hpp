@@ -59,7 +59,7 @@ static void read_sdf(string const& path, Scene& scene) {
     if (!file.is_open()) {
         cout << "Error. Couldn't find file";
     } else {
-        cout << "was able to read file";
+        cout << "was able to read file" << endl;
     }
 
     while (getline(file, line)) {
@@ -72,7 +72,7 @@ static void read_sdf(string const& path, Scene& scene) {
         } while (ss);
 
         if (lineparts[0] == "define") {
-            cout << "\n in define \n";
+            //cout << "\n in define \n";
             if (lineparts[1] == "material") {
                 string name = lineparts[2];
                 Color ka = {stof(lineparts[3]), stof(lineparts[4]), stof(lineparts[5])};
@@ -95,7 +95,7 @@ static void read_sdf(string const& path, Scene& scene) {
 
                     shared_ptr<Box> boxPtr = make_shared<Box>(box);
                     scene.shapes_.push_back(boxPtr);
-                    cout << " box loaded ";
+                    //cout << " box loaded ";
                 }
 
                 if (lineparts[2] == "sphere") {
@@ -107,7 +107,7 @@ static void read_sdf(string const& path, Scene& scene) {
                     Sphere sphere = Sphere(lineparts[3], center, radius, mat);
                     shared_ptr<Sphere> spherePtr = make_shared<Sphere>(sphere);
                     scene.shapes_.push_back(spherePtr);
-                    cout << " sphere loaded ";
+                    //cout << " sphere loaded ";
                 }
             }
             if (lineparts[1] == "light") {

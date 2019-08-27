@@ -7,9 +7,9 @@ define material blue    0 0 1   0 0 1    0 0 1    70
 
 define shape sphere SphereBlue 20 -20 -150 20 blue
 define shape sphere SphereRed 30 10 -150 10 red
-define shape sphere rightSphereGreen -15 10 -80 5 green
+define shape sphere rightSphereGreen -15 13 -80 5 green
 
-define shape box boxyGreen -30 0 -100 -20 10 -150 green
+define shape box boxyGreen -33 2 -100 -15 10 -150 blue
 define shape box mcBoxRed 20 -20 -100 30 -5 -110 red
 
 define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
