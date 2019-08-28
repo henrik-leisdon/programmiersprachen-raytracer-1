@@ -79,8 +79,9 @@ static void read_sdf(string const& path, Scene& scene) {
                 Color kd = {stof(lineparts[6]), stof(lineparts[7]), stof(lineparts[8])};
                 Color ks = {stof(lineparts[9]), stof(lineparts[10]), stof(lineparts[11])};
                 float m = stof(lineparts[12]);
+                float ref = stof(lineparts[13]);
 
-                shared_ptr<Material> matPtr = make_shared<Material>(name, ka, kd, ks, m);
+                shared_ptr<Material> matPtr = make_shared<Material>(name, ka, kd, ks, m, ref);
                 scene.materialMap.insert(pair<string, shared_ptr<Material>>(name, matPtr));
 
             }

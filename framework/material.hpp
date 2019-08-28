@@ -16,28 +16,26 @@ struct Material
             ka_({0.0f,0.0f,0.0f}),
             kd_({0.0f,0.0f,0.0f}),
             ks_({0.0f,0.0f,0.0f}),
-            m_(0.0f)
+            m_(0.0f),
+            ref_(0.0f)
             {}
         
         //custom constructor
-        Material(string const& name, Color const& ka, Color const& kd, Color const& ks, float m):
+        Material(string const& name, Color const& ka, Color const& kd, Color const& ks, float m, float ref):
             name_(name),
             ka_(ka),
             kd_(kd),
             ks_(ks),
-            m_(m)
+            m_(m),
+            ref_(ref)
             {} 
 
     friend ostream& operator << (ostream& os, Material const& mat) {
         os << "name: " << mat.name_ << "\n"
            << "ambient: " << mat.ka_ << "\n"
            << "diffuse: " << mat.kd_ << "\n"
-           << "specular: " <<mat.ks_ << "\n";
-    }
-
-    //temp:
-    Color getColor(){
-        return ka_;
+           << "specular: " <<mat.ks_ << "\n"
+           << "reflection: " << mat.ref_ << "\n";
     }
 
     //member variables
@@ -47,6 +45,7 @@ struct Material
         Color kd_;
         Color ks_;
         float m_;
+        float ref_;
                     /* Phong-exponent needed for the intensity of the specular reflection, 
                     specular = direct reflection of the light source*/
 

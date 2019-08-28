@@ -24,12 +24,13 @@ public:
   Renderer(Scene const& scene, unsigned w, unsigned h, std::string const& file); //
 
   void raycast();
-  Color trace(Ray const& ray, Scene const& scene);
+  Color trace(Ray const& ray, Scene const& scene, int step);
   Color getAmbientIllumination(Hit const& hit,Scene const& scene, shared_ptr<Shape> const& nearestObject);
   Color getDiffuseIllumination(Hit const& hit, Scene const& scene, shared_ptr<Shape> const& nearestObject, shared_ptr<Light> const& light);
   Color getSpecularIllumination(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearestObject, shared_ptr<Light> const& light);
   Color ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shared_ptr<Shape> const& nearestObject);
-  //Color calculateSpecular(Hit const& hit, shared_ptr<Shape> nearestObject, Scene const& scene, Ray const& ray, vec3 const& hitpoint);
+  Color getNormalColor(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearestObject);
+  Color calculateReflection(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearesObject, int steps);
   void write(Pixel const& p);
   
 
