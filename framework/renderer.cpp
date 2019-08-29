@@ -92,7 +92,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
         
         return final;
     } else {
-        return Color{0.1f, 0.1f, 0.1f};
+        return Color{0.05f, 0.05f, 0.05f};
     }
 }
 
@@ -209,13 +209,14 @@ Color Renderer::calculateReflection(Hit const& hit, Ray const& ray, Scene const&
     refCol = calculateReflection(nearestHit, reflectionRay, scene, newNearestObject, steps-1)*ref_coefficient+(getNormalColor(hit,ray, scene,nearesObject) *negRef);
   }
   else{
+    //cout << newNearestObject->getName() << " dist: " << nearestHit.dist_ << endl; 
     refCol = getNormalColor(nearestHit, reflectionRay, scene, newNearestObject); 
   }
   return refCol;
 
   }
   else {
-    return nearesObject->getMaterial()->ka_*nearesObject->getMaterial()->ref_;
+    return getNormalColor(hit, ray, scene, nearesObject);
   }
 
   

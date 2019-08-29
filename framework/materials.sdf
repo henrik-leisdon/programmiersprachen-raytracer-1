@@ -1,17 +1,18 @@
 #material       color   ambiant diffuse specular  m     ref
 define material red     1 0 0   1 0 0    1 0 0    20    0
 define material green   0 1 0   0 1 0    0 1 0    10    0
-define material mirror  1 1 1   1 1 1    1 1 1    30    0.5
+define material mirror  0.7 0.7 0.7   0.7 0.7 0.7    0.7 0.7 0.7    30    0.5
 define material blue    0 0 1   0 0 1    0 0 1    70    0.5
 
-define shape sphere SphereBlue      20  -20  -150  20   blue
+define shape sphere SphereBlue      20  -20  -150  20   mirror
 define shape sphere SphereRed        29    2  -100   5   red
 //define shape sphere sphereGreen   -17  15   -60   3   green
 define shape sphere sphereGreen2    -3    2  -100   5   green
 
-define shape box boxymirror  -33   2 -100  -15   10  -150  green
+define shape box boxymirror  -33   2 -100  -15   10  -150  blue
 define shape box mcBoxRed     30 -10  -90   40  -15  -100  red
-define shape box blueBoxy    -20 -30 -140  -10  -10  -160  mirror
+//define shape box mcBoxyRed2   0 -10  -90   10  -20  -100  red
+define shape box blueBoxy    -20 -30 -140  -10  -10  -160  blue
 
 define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
 //define light lighty2 0 -50 -110 1.0 1.0 1.0 0.3 0.3 0.3 1

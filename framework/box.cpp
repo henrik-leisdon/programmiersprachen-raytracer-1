@@ -158,18 +158,17 @@ if(zMaxHitP.x <=boxMax_.x && zMaxHitP.x >= boxMin_.x
     hitpoints[5].hitpoint_ = zMaxHitP;
     hitpoints[5].dist_ = zMaxDist;
     hitpoints[5].hitnormal_ = vec3{0.0f,0.0f,-1.0f};
-    //cout << "zmax dist: " << zMaxDist << endl;
+    
 }
 
 float smallestDistance = 10000000.0f;
 Hit closestHit;
  closestHit.hit_ = false;
- for(int i = 0; i< 5; i++){
+ for(int i = 0; i< 6; i++){
      if(hitpoints[i].dist_<smallestDistance && hitpoints[i].hit_==true){
          //cout << "closest hit: " << hitpoints[i].hitpoint_.x << " " << hitpoints[i].hitpoint_.y << " " << hitpoints[i].hitpoint_.z << endl;
          closestHit = hitpoints[i];
          smallestDistance = hitpoints[i].dist_;
-         //cout << "kante: " << i << " distance: " << smallestDistance << endl;
      }
  }
 
