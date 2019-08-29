@@ -131,11 +131,12 @@ static void read_sdf(string const& path, Scene& scene) {
 
 
             if (lineparts[1] == "camera") {
+                string name = lineparts[2];
                 vec3 position = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
                 vec3 direction = {stof(lineparts[7]), stof(lineparts[8]), stof(lineparts[9])};
                 vec3 upVec = {stof(lineparts[10]), stof(lineparts[11]), stof(lineparts[12])};
                 float fov = {stof(lineparts[3])};
-                Camera camera = Camera((lineparts[2]), fov, position, direction, upVec);
+                Camera camera = Camera(name, fov, position, direction, upVec);
                 
                 shared_ptr<Camera> camptr = make_shared<Camera>(camera);
                 scene.camera_p.push_back(camptr);
@@ -154,6 +155,37 @@ static void read_sdf(string const& path, Scene& scene) {
                 string name = lineparts[2];
                 string keyword = lineparts[3];
                 cout << "transformation found " << "\n";
+                for (auto transform : scene.camera_p) {
+                    if (name == transform->getName()) {
+                        if (keyword == "translate") {
+                            cout << "found cam translation" << "\n";
+                            vec3 trans = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
+
+                            transform->translate(trans);
+                        }
+
+                        if(keyword == "rotateX") {
+                            cout << "found cam rotation, x-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
+
+                            transform->rotateX(phi);
+                        }
+
+                        if(keyword == "rotateY") {
+                            cout << "found cam rotation, y-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
+
+                            transform->rotateY(phi);
+                        }
+
+                        if(keyword == "rotateZ") {
+                            cout << "found cam rotation, z-axis" << "\n";
+                            float phi = {stof(lineparts[4])};
+
+                            transform->rotateZ(phi);
+                        }
+                    }
+                }
                 for (auto transform : scene.shapes_) {
                     if (name == transform->getName()) {
                         if(keyword == "translate") {
