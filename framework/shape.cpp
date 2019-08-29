@@ -54,7 +54,7 @@ ostream& Shape::print(ostream& os) const
 
 void Shape::translate(vec3 const &trans) {
     translate_=TRANSLATION_MAT;
-    world_transform_=translate_*world_transform_;
+    world_transform_=world_transform_*translate_*rotate_*scale_;
     inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
@@ -62,7 +62,7 @@ void Shape::translate(vec3 const &trans) {
 
 void Shape::scale(vec3 const &scale) {
     scale_=SCALING_MAT;
-    world_transform_=scale_*world_transform_;
+    world_transform_=world_transform_*translate_*rotate_*scale_;
     inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
@@ -71,7 +71,7 @@ void Shape::scale(vec3 const &scale) {
 void Shape::rotateX(float phi) {
     float rad = phi*(M_PI/180.0f);
     rotate_=X_ROTATION_MAT;
-    world_transform_=rotate_*world_transform_;
+    world_transform_=world_transform_*translate_*rotate_*scale_;
     inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
@@ -80,7 +80,7 @@ void Shape::rotateX(float phi) {
 void Shape::rotateY(float phi) {
     float rad = phi*(M_PI/180.0f);
     rotate_=Y_ROTATION_MAT;
-    world_transform_=rotate_*world_transform_;
+    world_transform_=world_transform_*translate_*rotate_*scale_;
     inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;
@@ -89,7 +89,7 @@ void Shape::rotateY(float phi) {
 void Shape::rotateZ(float phi) {
     float rad = phi*(M_PI/180.0f);
     rotate_=Z_ROTATION_MAT;
-    world_transform_=rotate_*world_transform_;
+    world_transform_=world_transform_*translate_*rotate_*scale_;
     inverse_world_transform_=inverse(world_transform_);
 
     isTransformed_=true;

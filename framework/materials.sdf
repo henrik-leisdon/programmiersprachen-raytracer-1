@@ -4,29 +4,31 @@ define material green   0 1 0   0 1 0    0 1 0    10    0
 define material mirror  0.7 0.7 0.7   0.7 0.7 0.7    0.7 0.7 0.7    30    0.5
 define material blue    0 0 1   0 0 1    0 0 1    70    0.5
 
-define shape sphere SphereBlue      20  -20  -150  20   mirror
-define shape sphere SphereRed        29    2  -100   5   red
-//define shape sphere sphereGreen   -17  15   -60   3   green
-define shape sphere sphereGreen2    -3    2  -100   5   green
+#Sphere             name     center: x    y    z | rad | mat
+define shape sphere SphereMirr       20  -20  -90   20   mirror
+define shape sphere SphereRed        20   5   -100  15   red
+define shape sphere sphereGreen2    -3    2   -100  5    green
+//define shape sphere sphereGreen     -17   15  -60   3    green
 
-define shape box boxymirror  -33   2 -100  -15   10  -150  blue
-define shape box mcBoxRed     30 -10  -90   40  -15  -100  red
-//define shape box mcBoxyRed2   0 -10  -90   10  -20  -100  red
-define shape box blueBoxy    -20 -30 -140  -10  -10  -160  blue
+#Box                name     Min:    x    y    z | Max: x   y    z  | mat
+define shape box    boxymirror      -33   2   -100    -15   10  -100   blue
+define shape box    mcBoxRed         30  -10  -90      40  -15  -100   red
+define shape box    blueBoxy        -20  -30  -140    -10  -10  -100   blue
+//define shape box    mcBoxyRed2       0   -10  -90      10  -20  -100   red
 
-define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
-//define light lighty2 0 -50 -110 1.0 1.0 1.0 0.3 0.3 0.3 1
+define light   lighty     100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
+//define light lighty2      0 -50 -110 1.0 1.0 1.0 0.3 0.3 0.3 1
 
 #camera       name   fov:   eye       dir         up (wo ist oben)
 define camera cam    80.0   0 0 0     0 0 -1      0 1 0
 
 define ambient 0.1 0.1 0.1 
 
-define transform mcBoxRed rotateZ -20
-define transform boxyGreen translate 9 5 3
-define transform SphereRed scale 70 70 30
-define transform boxyGreen scale 100 60 90
-define transform rightSphereGreen rotateX 50
-define transform SphereBlue rotateY 30
+define transform SphereRed        scale        30 30 20
+define transform SphereMirr       rotateY      30
+//define transform mcBoxRed         rotateZ     -20
+//define transform boxyGreen        translate    9 5 3
+//define transform boxyGreen        scale        100 60 90
+//define transform rightSphereGreen rotateX      50
 
-define transform cam translate 30 20 50
+define transform cam              translate   -20 20 -50
