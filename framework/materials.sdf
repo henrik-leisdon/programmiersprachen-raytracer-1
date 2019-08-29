@@ -22,12 +22,11 @@ define camera cam    80.0   0 0 0     0 0 -1      0 1 0
 
 define ambient 0.1 0.1 0.1 
 
-define transform mcBoxRed rotateZ -10
+define transform mcBoxRed rotateZ -20
 define transform boxyGreen translate 9 5 3
 define transform SphereRed scale 70 70 30
 define transform boxyGreen scale 100 60 90
-define transform rightSphereGreen rotateX 0.2
-define transform SphereBlue rotateY 0.4
+define transform rightSphereGreen rotateX 50
+define transform SphereBlue rotateY 30
 
-define transform cam translate 30 30 30
-//define transform cam rotateY 0.3
+define transform cam translate 30 20 50

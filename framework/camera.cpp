@@ -6,9 +6,9 @@ using namespace glm;
 
 
 #define TRANSLATION_MAT mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{trans.x, trans.y, trans.z, 1.0f}};
-#define X_ROTATION_MAT  mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, cos(phi), sin(phi), 0.0f}, vec4{0.0f, -sin(phi), cos(phi), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-#define Y_ROTATION_MAT  mat4x4{vec4{cos(phi), 0.0f, -sin(phi), 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{sin(phi), 0.0f, cos(phi), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-#define Z_ROTATION_MAT  mat4x4{vec4{cos(phi), sin(phi), 0.0f, 0.0f}, vec4{-sin(phi), cos(phi), 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+#define X_ROTATION_MAT  mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, cos(rad), sin(rad), 0.0f}, vec4{0.0f, -sin(rad), cos(rad), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+#define Y_ROTATION_MAT  mat4x4{vec4{cos(rad), 0.0f, -sin(rad), 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{sin(rad), 0.0f, cos(rad), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+#define Z_ROTATION_MAT  mat4x4{vec4{cos(rad), sin(rad), 0.0f, 0.0f}, vec4{-sin(rad), cos(rad), 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
 
 Camera::Camera():
     name_("default camera"),
@@ -46,6 +46,7 @@ void Camera::translate(vec3 const &trans) {
 }
 
 void Camera::rotateX(float phi) {
+    float rad = phi*(M_PI/180.0f);
     cameraRotation_=X_ROTATION_MAT;
     transform_=cameraRotation_*transform_;
     inverse_transform_=glm::inverse(transform_);
@@ -53,6 +54,7 @@ void Camera::rotateX(float phi) {
 }
 
 void Camera::rotateY(float phi) {
+    float rad = phi*(M_PI/180.0f);
     cameraRotation_=Y_ROTATION_MAT;
     transform_=cameraRotation_*transform_;
     inverse_transform_=glm::inverse(transform_);
@@ -60,6 +62,7 @@ void Camera::rotateY(float phi) {
 }
 
 void Camera::rotateZ(float phi) {
+    float rad = phi*(M_PI/180.0f);
     cameraRotation_=Z_ROTATION_MAT;
     transform_=cameraRotation_*transform_;
     inverse_transform_=glm::inverse(transform_);
