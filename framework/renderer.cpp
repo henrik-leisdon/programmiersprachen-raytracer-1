@@ -24,9 +24,9 @@ void Renderer::raycast()
   Scene scene;
   //Camera cam;
   std::size_t const checker_pattern_size = 20;
-  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   int i = scene.shapes_.size() ;
   shared_ptr<Camera> cam = scene.camera_;
   int a;
@@ -36,11 +36,12 @@ void Renderer::raycast()
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
       int step = 2;
+      Ray ray = scene.camera_->calc_cam_ray(x, y, height_, width_, d);
       //cout << "x: " << x << " y " << y <<endl;
-      vec3 origin = cam->getPos();
-      vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
-      vec3 normalizedDirection{glm::normalize(direction)};
-      Ray ray{origin, normalizedDirection};
+      //vec3 origin = cam->getPos();
+      //vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
+      //vec3 normalizedDirection{glm::normalize(direction)};
+      //Ray ray{origin, normalizedDirection};
       p.color = trace(ray, scene, step);
 
       write(p);
