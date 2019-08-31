@@ -24,19 +24,28 @@ void Renderer::raycast()
   Scene scene;
   //Camera cam;
   std::size_t const checker_pattern_size = 20;
-  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
   //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
+  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
   int i = scene.shapes_.size() ;
   shared_ptr<Camera> cam = scene.camera_;
   int a;
   float d = (width_/2.0f) / (tan(cam->getAngle()/2.0f*M_PI/180));
+  int frames = 1;
 
+  for(int i = 0; i<frames; ++i){
+
+    shared_ptr<Camera> cam = scene.camera_;
+    cam->translate(vec3{-frames, -2, frames});
+    cam->rotateY(frames);
+
+  #pragma omp parallel for
   for (unsigned y = 0; y < height_; ++y) {
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
       int step = 2;
-      Ray ray = scene.camera_->calc_cam_ray(x, y, height_, width_, d);
+      
+      Ray ray = cam->calc_cam_ray(x, y, height_, width_, d);
       //cout << "x: " << x << " y " << y <<endl;
       //vec3 origin = cam->getPos();
       //vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
@@ -47,7 +56,10 @@ void Renderer::raycast()
       write(p);
     }
   }
-  ppm_.save(filename_);
+  string number = to_string(i);
+  string filename_frame = "raytracer_"+number;
+  ppm_.save(filename_frame);
+}
 }
 
 //trace the ray through the scene
@@ -77,13 +89,13 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
     if (nearestObject != nullptr) {
       Color final;
       //refraction
-      if(nearestObject->getMaterial()->opacity_>0 && step>=0){
+      if(nearestObject->getMaterial()->opacity_>0 && step>=10){
         
         float opacity = nearestObject->getMaterial()->opacity_;
         float neg_opacity = 1-opacity;
         Color final = calculateRefraction(hit,ray, scene, nearestObject,nullptr, step)*opacity+(getNormalColor(hit,ray,scene,nearestObject)*neg_opacity);
         cout << "final color: " << final ;
-        return final;
+        
       }
       //reflection
       else if(nearestObject->getMaterial()->ref_>0){
@@ -91,14 +103,15 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
         float ref_coefficient  = nearestObject->getMaterial()->ref_;
         float negRef = 1.0f-ref_coefficient;
         final = calculateReflection(hit, ray, scene, nearestObject, step-1)*ref_coefficient+(getNormalColor(hit,ray, scene, nearestObject) *negRef);
-        return final;
+        
       }
       //normal color/illumination
       else if(nearestObject->getMaterial()->opacity_== 0.0) {
         Color illumination = getNormalColor(hit, ray, scene, nearestObject);
         final =  illumination;  
-        return final;
+        
       }
+        return final;
         cout << "after final color: " << final << endl;
         
     } else {

@@ -17,6 +17,7 @@
 #include "camera.hpp"
 #include <string>
 #include <glm/glm.hpp>
+#include <omp.h>
 
 class Renderer
 {
