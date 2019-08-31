@@ -22,12 +22,8 @@ define shape box ground   -50 -5 0 50 -8 -200 red
 define light lighty 100 100 100 1.0 1.0 1.0 0.3 0.3 0.3 3
 define light lighty2 -100 20 -100 1.0 1.0 1.0 0.3 0.3 0.3 1.3
 define camera cam    45.0   0 0 0     0 0 -1      0 1 0
-//define transform cam rotateZ 
-//define transform satan rotateX 45
-//define transform satan rotateY 45
+
 
 define transform satan translate 3.5 1 0
 define transform satan rotateZ 45
 
-//define transform cam translate -60 -2 60
-//define transform cam rotateY -90

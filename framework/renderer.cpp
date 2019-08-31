@@ -22,25 +22,27 @@ Renderer::Renderer(Scene const& scene, unsigned w, unsigned h, std::string const
 void Renderer::raycast()
 {
   Scene scene;
-  //Camera cam;
   std::size_t const checker_pattern_size = 20;
   //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
-  int i = scene.shapes_.size() ;
-  shared_ptr<Camera> cam = scene.camera_;
-  int a;
-  float d = (width_/2.0f) / (tan(cam->getAngle()/2.0f*M_PI/180));
-  int frames = 1;
+  read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
+  //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
 
-  for(int i = 0; i<frames; ++i){
+  shared_ptr<Camera> cam1 = scene.camera_;
+  float d = (width_/2.0f) / (tan(cam1->getAngle()/2.0f*M_PI/180));
+  int frames = 60;
+
+
+  //#pragma omp parallel for
+  for(int f = 0; f<frames; f++){
 
     shared_ptr<Camera> cam = scene.camera_;
-    cam->translate(vec3{-frames, -2, frames});
-    cam->rotateY(frames);
+    cam->translate(vec3{-1, 0, 1});
+    cam->rotateY(-1.5);
+    
 
-  #pragma omp parallel for
+  //#pragma omp parallel for
   for (unsigned y = 0; y < height_; ++y) {
+    //#pragma omp parallel for
     for (unsigned x = 0; x < width_; ++x) {
       Pixel p(x,y);
       int step = 2;
@@ -56,7 +58,8 @@ void Renderer::raycast()
       write(p);
     }
   }
-  string number = to_string(i);
+  cam = scene_.camera_;
+  string number = to_string(f);
   string filename_frame = "raytracer_"+number;
   ppm_.save(filename_frame);
 }
