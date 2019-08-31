@@ -20,8 +20,8 @@ class Box : public Shape
         vec3 getBoxMin();
         vec3 getBoxMax();
 
-        double area() const override;
-        double volume() const override;
+        double area() const;
+        double volume() const;
         Hit intersect(Ray const& ray, float &t) override;
        
         ostream& print(ostream& os) const override;

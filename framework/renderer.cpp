@@ -69,30 +69,39 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
                 nearestObject = i;
                 hit.hitpoint_ = h.hitpoint_;
                 hit.direction_ = h.direction_;
-                //cout << "dir h: " << h.direction_.x << " " << h.direction_.y << " " << h.direction_.z 
-                //<< " ray.dir: " << ray.direction.x << " " << ray.direction.y << " " << ray.direction.z <<endl;
                 hit.hit_ = h.hit_;
-                
-                
             }
         }
     }
     if (nearestObject != nullptr) {
       Color final;
-      if(nearestObject->getMaterial()->ref_>0){
+      //refraction
+      if(nearestObject->getMaterial()->opacity_>0 && step>=0){
+        
+        float opacity = nearestObject->getMaterial()->opacity_;
+        float neg_opacity = 1-opacity;
+        Color final = calculateRefraction(hit,ray, scene, nearestObject,nullptr, step)*opacity+(getNormalColor(hit,ray,scene,nearestObject)*neg_opacity);
+        cout << "final color: " << final ;
+        return final;
+      }
+      //reflection
+      else if(nearestObject->getMaterial()->ref_>0){
 
-      float ref_coefficient  = nearestObject->getMaterial()->ref_;
-      float negRef = 1.0f-ref_coefficient;
+        float ref_coefficient  = nearestObject->getMaterial()->ref_;
+        float negRef = 1.0f-ref_coefficient;
         final = calculateReflection(hit, ray, scene, nearestObject, step-1)*ref_coefficient+(getNormalColor(hit,ray, scene, nearestObject) *negRef);
-      }else {
+        return final;
+      }
+      //normal color/illumination
+      else if(nearestObject->getMaterial()->opacity_== 0.0) {
         Color illumination = getNormalColor(hit, ray, scene, nearestObject);
         final =  illumination;  
-      }
-      
-        
         return final;
+      }
+        cout << "after final color: " << final << endl;
+        
     } else {
-        return Color{0.05f, 0.05f, 0.05f};
+        return Color{0.1f, 0.1f, 0.1f};
     }
 }
 
@@ -111,7 +120,6 @@ Color Renderer::getAmbientIllumination(Hit const& hit, Scene const& scene, share
     Color final_ambiance = amb*nearestObject->getMaterial()->ka_; //ambiente mal ka_;
     return final_ambiance;
 }
-
 
 // get the pointlights in the scene to determine the diffuse illumination
 Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shared_ptr<Shape> const& nearestObject) {
@@ -178,7 +186,6 @@ Color Renderer::getSpecularIllumination(Hit const &hit, Ray const &ray, Scene co
     Color final_specular = ks * pow(factor, m); 
     
     return final_specular;
-  
 }
 
 Color Renderer::calculateReflection(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearesObject, int steps){
@@ -198,7 +205,6 @@ Color Renderer::calculateReflection(Hit const& hit, Ray const& ray, Scene const&
             nearestHit = h;
       }
     }
-
   }
   if(nearestHit.hit_ == true)
   {
@@ -209,19 +215,67 @@ Color Renderer::calculateReflection(Hit const& hit, Ray const& ray, Scene const&
     refCol = calculateReflection(nearestHit, reflectionRay, scene, newNearestObject, steps-1)*ref_coefficient+(getNormalColor(hit,ray, scene,nearesObject) *negRef);
   }
   else{
-    //cout << newNearestObject->getName() << " dist: " << nearestHit.dist_ << endl; 
     refCol = getNormalColor(nearestHit, reflectionRay, scene, newNearestObject); 
   }
   return refCol;
-
   }
   else {
     return getNormalColor(hit, ray, scene, nearesObject);
   }
+}
+
+Color Renderer::calculateRefraction(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearesObject , shared_ptr<Shape> const& prevObject, int steps){
+  float eta = 1.0f;
+  if(prevObject == nullptr){
+     eta = 1.0/1.5;
+  
+  }else if(prevObject == nearesObject){
+    eta = 1.5;
+  }
+  vec3 refractVec = normalize(glm::refract(normalize(ray.direction),hit.hitnormal_,eta));
+  Ray refractRay = Ray(hit.hitpoint_-0.1f*hit.hitnormal_,refractVec);
+  //cout << "steps:" <<steps <<" eta: " << eta <<endl;
+  float distance1 = 0;
+  float dist = 10000000.0f;
+  Hit h;
+  Hit newHit;
+  shared_ptr<Shape> newNearestObject = nullptr;
+  for(auto i : scene.shapes_){
+    h = i->intersect(refractRay,distance1);
+    if(h.hit_){
+      if(h.dist_< dist){
+        newNearestObject = i;
+        newHit = h;
+      }
+
+    }
+  }
+
+  //if outside and hits shape behind:
+  if(newNearestObject!= nearesObject && newNearestObject!=nullptr){
+    //cout << "new nearest Object (object behind: " << newNearestObject->getName() << endl;
+    Color bgCol = getNormalColor(newHit, refractRay, scene, newNearestObject);
+    //cout << "backgroundObject color: " << bgCol << endl;
+    return bgCol;
+  }
+  //if inside: 
+  else if(newNearestObject == nearesObject){
+    cout << "calc in to out \n";
+    vec3 normal = newHit.hitnormal_;
+    normal.x = -newHit.hitnormal_.x;
+    normal.y = -newHit.hitnormal_.y;
+    normal.z = -newHit.hitnormal_.z;
+    newHit.hitnormal_ = normal;
+    return calculateRefraction(newHit, refractRay, scene, newNearestObject ,nearesObject, steps-1);
+  }
+  else{
+    cout << "get background --> no shape behind" << endl;
+    return Color{0.1,0.1,0.1};
+  }
 
   
-  
-  
+ 
+
 }
 
 

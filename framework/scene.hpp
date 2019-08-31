@@ -10,10 +10,12 @@
 #include "material.hpp"
 #include "shape.hpp"
 #include "box.hpp"
+#include "triangle.hpp"
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "light.hpp"
 #include "ambient.hpp"
+
 //#include "composite.hpp"
 
 using namespace std;
@@ -80,9 +82,11 @@ static void read_sdf(string const& path, Scene& scene) {
                 Color ks = {stof(lineparts[9]), stof(lineparts[10]), stof(lineparts[11])};
                 float m = stof(lineparts[12]);
                 float ref = stof(lineparts[13]);
+                float opacity = stof(lineparts[14]);
 
-                shared_ptr<Material> matPtr = make_shared<Material>(name, ka, kd, ks, m, ref);
+                shared_ptr<Material> matPtr = make_shared<Material>(name, ka, kd, ks, m, ref, opacity);
                 scene.materialMap.insert(pair<string, shared_ptr<Material>>(name, matPtr));
+                //cout <<  "mat loaded \n";  
 
             }
             if (lineparts[1] == "shape") {
@@ -109,6 +113,19 @@ static void read_sdf(string const& path, Scene& scene) {
                     shared_ptr<Sphere> spherePtr = make_shared<Sphere>(sphere);
                     scene.shapes_.push_back(spherePtr);
                     //cout << " sphere loaded ";
+                }
+
+                if(lineparts[2] == "triangle") {
+                    vec3 a = {stof(lineparts[4]),stof(lineparts[5]),stof(lineparts[6])};
+                    vec3 b = {stof(lineparts[7]),stof(lineparts[8]),stof(lineparts[9])};
+                    vec3 c = {stof(lineparts[10]),stof(lineparts[11]),stof(lineparts[12])};
+                    shared_ptr<Material> mat = scene.materialMap.at(lineparts[13]);
+                    //Triangle t; //= Triangle(lineparts[3], a , b , c , mat);
+                    //shared_ptr<Triangle> tPtr = make_shared<Triangle>();
+                    //scene.shapes_.push_back(tPtr);
+                    cout << "triangle loaded" << endl;
+                    
+                    
                 }
             }
             if (lineparts[1] == "light") {

@@ -29,8 +29,8 @@ class Shape
         string getName() const;
         shared_ptr<Material> getMaterial() const;
 
-        virtual double area() const = 0;
-        virtual double volume() const = 0;
+        //virtual double area() const = 0;
+        //virtual double volume() const = 0;
         virtual Hit intersect (Ray const& ray, float& t) = 0;
         virtual ostream& print (ostream& os) const;
 

@@ -14,14 +14,14 @@ class Sphere : public Shape
 {
     public:
         Sphere();
-        Sphere(string name, vec3 const& center, double radius, shared_ptr<Material> material);
+        Sphere(string name, vec3 const& center, double radius, std::shared_ptr<Material> material);
         ~Sphere();
 
         vec3 getCenter() const;
         double getRadius() const;
 
-        double area() const override;
-        double volume() const override;
+        double area() const;
+        double volume() const;
         Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print (ostream& os) const override;
