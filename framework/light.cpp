@@ -25,11 +25,11 @@ string Light::getName()
     return name_;
 }
 
-vec3 Light::getPos(){
+vec3 Light::getPos() {
     return pos_;
 }
 
-Color Light::getColor(){
+Color Light::getColor() {
     return color_;
 }
 

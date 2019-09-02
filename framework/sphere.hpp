@@ -29,7 +29,10 @@ class Sphere : public Shape
     private:
         vec3 center_;
         double radius_;
+
 };
- ostream& operator << (ostream& os, const Sphere& s);
+
+ostream& operator << (ostream& os, const Sphere& s);
+
 
 #endif

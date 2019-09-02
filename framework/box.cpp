@@ -52,7 +52,7 @@ double Box::volume() const {
 
 Hit Box::intersect(Ray const &firstRay, float &t) {
 Ray ray;
-if(isTransformed_){
+if(isTransformed_) {
     ray = transformRay(inverse_world_transform_, firstRay);
 } else {
     ray = firstRay;
@@ -85,7 +85,6 @@ vec3 zMaxHitP = ray.origin + zMaxDist*(dirNormaized);
 
 Hit hitpoints[6];
 
-
 //cout << "xMinHitPoint: " << xMinHitP.x << " " << xMinHitP.y << " " << xMinHitP.z << endl;
 
 //left:
@@ -101,7 +100,6 @@ if(xMinHitP.y <= boxMax_.y && xMinHitP.y >= boxMin_.y &&
     hitpoints[0].hitnormal_ = vec3{-1.0f,0.0f,0.0f};
 }
 
-
 //right:
 hitpoints[1].hit_ = false;
 if(xMaxHitP.y <=boxMax_.y && xMaxHitP.y >= boxMin_.y
@@ -112,6 +110,7 @@ if(xMaxHitP.y <=boxMax_.y && xMaxHitP.y >= boxMin_.y
     hitpoints[1].dist_ = xMaxDist;
     hitpoints[1].hitnormal_ = vec3{1.0f,0.0f,0.0f};
 }
+
 //bottom
 hitpoints[2].hit_ = false;
 if(yMinHitP.x <= boxMax_.x && yMinHitP.x >= boxMin_.x
@@ -135,9 +134,7 @@ if(yMaxHitP.x <= boxMax_.x && yMaxHitP.x >= boxMin_.x
 
 }
 
-
 //front:
-
 hitpoints[4].hit_ = false;
 if(zMinHitP.x <=boxMax_.x && zMinHitP.x >= boxMin_.x
     && zMinHitP.y <= boxMax_.y && zMinHitP.y >= boxMin_.y && zMinDist > 0)
@@ -164,15 +161,15 @@ if(zMaxHitP.x <=boxMax_.x && zMaxHitP.x >= boxMin_.x
 float smallestDistance = 10000000.0f;
 Hit closestHit;
  closestHit.hit_ = false;
- for(int i = 0; i< 6; i++){
-     if(hitpoints[i].dist_<smallestDistance && hitpoints[i].hit_==true){
+ for(int i = 0; i< 6; i++) {
+     if(hitpoints[i].dist_<smallestDistance && hitpoints[i].hit_==true) {
          //cout << "closest hit: " << hitpoints[i].hitpoint_.x << " " << hitpoints[i].hitpoint_.y << " " << hitpoints[i].hitpoint_.z << endl;
          closestHit = hitpoints[i];
          smallestDistance = hitpoints[i].dist_;
      }
  }
 
-if(isTransformed_){
+if(isTransformed_) {
     vec4 transformHit = world_transform_ * vec4{closestHit.hitpoint_, 1};
     closestHit.hitpoint_ = vec3{transformHit.x, transformHit.y, transformHit.z};
 
@@ -201,7 +198,6 @@ ostream& operator << (ostream& os, const Box& b) {
 
 
 /*
-
  Hit Box::intersect(Ray const &ray, float &t) {
     float finalDistance;
     Hit result;

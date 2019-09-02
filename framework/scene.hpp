@@ -28,7 +28,6 @@ struct Scene
         void read_sdf(string const& path, Scene& scene);
 
         Color getPixelColor(Ray const& ray);
-        
 
         map <string, shared_ptr<Material>> materialMap;
         vector<shared_ptr<Shape>> shapes_;
@@ -39,7 +38,6 @@ struct Scene
         shared_ptr<Camera> camera_;
 
 };
-
 
 /* shared_ptr<Material> findMaterial(string materialName, Scene& scene)
 {
@@ -86,9 +84,9 @@ static void read_sdf(string const& path, Scene& scene) {
 
                 shared_ptr<Material> matPtr = make_shared<Material>(name, ka, kd, ks, m, ref, opacity);
                 scene.materialMap.insert(pair<string, shared_ptr<Material>>(name, matPtr));
-                //cout <<  "mat loaded \n";  
-
+                //cout <<  "mat loaded \n";
             }
+
             if (lineparts[1] == "shape") {
                 if (lineparts[2] == "box") {
                     vec3 boxMin = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
@@ -124,10 +122,9 @@ static void read_sdf(string const& path, Scene& scene) {
                     //shared_ptr<Triangle> tPtr = make_shared<Triangle>();
                     //scene.shapes_.push_back(tPtr);
                     cout << "triangle loaded" << endl;
-                    
-                    
                 }
             }
+
             if (lineparts[1] == "light") {
                 vec3 postition = {stof(lineparts[3]), stof(lineparts[4]), stof(lineparts[5])};
                 Color color = {stof(lineparts[6]), stof(lineparts[7]), stof(lineparts[8])};
@@ -136,7 +133,6 @@ static void read_sdf(string const& path, Scene& scene) {
                 Light light = Light{lineparts[2], postition, color, ambColor ,stoi(lineparts[12])};
                 shared_ptr<Light> lightPtr = make_shared<Light>(light);
                 scene.light_.push_back(lightPtr);
-
             }
 
             /*if(lineparts[1] == "camera")
@@ -203,6 +199,7 @@ static void read_sdf(string const& path, Scene& scene) {
                         }
                     }
                 }
+
                 for (auto transform : scene.shapes_) {
                     if (name == transform->getName()) {
                         if(keyword == "translate") {
@@ -210,7 +207,6 @@ static void read_sdf(string const& path, Scene& scene) {
                             vec3 trans = {stof(lineparts[4]), stof(lineparts[5]), stof(lineparts[6])};
 
                             transform->translate(trans);
-
                         }
 
                         if(keyword == "rotateX") {

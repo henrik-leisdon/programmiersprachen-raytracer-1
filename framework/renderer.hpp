@@ -38,7 +38,6 @@ public:
   Color calculateRefraction(Hit const& hit, Ray const& ray, Scene const& scene, shared_ptr<Shape> const& nearesObject, shared_ptr<Shape> const& prevObject, int steps);
   
   void write(Pixel const& p);
-  
 
   inline std::vector<Color> const& color_buffer() const
   {

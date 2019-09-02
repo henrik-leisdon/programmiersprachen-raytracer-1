@@ -4,7 +4,6 @@
 using namespace std;
 using namespace glm;
 
-
 #define TRANSLATION_MAT mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{0.0f, 0.0f, 1.0f, 0.0f}, vec4{trans.x, trans.y, trans.z, 1.0f}};
 #define X_ROTATION_MAT  mat4x4{vec4{1.0f, 0.0f, 0.0f, 0.0f}, vec4{0.0f, cos(rad), sin(rad), 0.0f}, vec4{0.0f, -sin(rad), cos(rad), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};
 #define Y_ROTATION_MAT  mat4x4{vec4{cos(rad), 0.0f, -sin(rad), 0.0f}, vec4{0.0f, 1.0f, 0.0f, 0.0f}, vec4{sin(rad), 0.0f, cos(rad), 0.0f}, vec4{0.0f, 0.0f, 0.0f, 1.0f}};

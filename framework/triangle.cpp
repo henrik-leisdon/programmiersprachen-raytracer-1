@@ -37,13 +37,13 @@ vec3 Triangle::getC() const
     return c_;
 }
 
-Hit Triangle::intersect(Ray const& firstRay, float& t){
+Hit Triangle::intersect(Ray const& firstRay, float& t) {
     bool intersect;
     Hit result;
 
     Ray ray={firstRay.origin, firstRay.direction};
 
-    if(isTransformed_){
+    if(isTransformed_) {
         ray = transformRay(inverse_world_transform_, ray);
     } else {
         ray = firstRay;
@@ -55,7 +55,7 @@ Hit Triangle::intersect(Ray const& firstRay, float& t){
     vec3 h = glm::cross(ray.direction, a_c);
     float a = glm::dot(a_b, h);
 
-    if(a>eps && a<eps){
+    if(a>eps && a<eps) {
         result.hit_=false;
         intersect = false;
     }
@@ -63,13 +63,13 @@ Hit Triangle::intersect(Ray const& firstRay, float& t){
     float f = 1/a;
     vec3 s = ray.origin-a_;
     float u = f*(dot(s,h));
-    if(u<0.0 || u>1.0){
+    if(u<0.0 || u>1.0) {
         result.hit_=false;
     }
 
     vec3 q = cross(s,a_b);
     float v = f*dot(ray.direction, q);
-    if(t> eps){
+    if(t> eps) {
         result.hitpoint_ = ray.origin+ray.direction*t;
         result.hitnormal_= normalize(cross(a_b,a_c));
 
@@ -84,14 +84,10 @@ Hit Triangle::intersect(Ray const& firstRay, float& t){
         result.direction_ = ray.direction;
         return result;
     }
-    else{
+    else {
         result = Hit();
         return result;
     }
-    
-
-    
-
 }
 
 ostream& Triangle::print(ostream &os) const {

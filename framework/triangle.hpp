@@ -24,11 +24,11 @@ class Triangle : public Shape
         Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print(ostream& os) const override;
+
     private:
         vec3 a_;
         vec3 b_;
         vec3 c_;
-
 
 };
 

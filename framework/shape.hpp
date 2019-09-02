@@ -19,7 +19,6 @@
 
 using namespace std;
 
-
 class Shape
 {
     public:
@@ -41,18 +40,16 @@ class Shape
         virtual void rotateY(float phi);
         virtual void rotateZ(float phi);
 
+    protected:
+        string name_;
+        shared_ptr<Material> material_;
 
-
-protected:
-            string name_;
-            shared_ptr<Material> material_;
-
-            bool isTransformed_;
-            mat4 world_transform_;
-            mat4 inverse_world_transform_;
-            mat4 translate_;
-            mat4 scale_;
-            mat4 rotate_;
+        bool isTransformed_;
+        mat4 world_transform_;
+        mat4 inverse_world_transform_;
+        mat4 translate_;
+        mat4 scale_;
+        mat4 rotate_;
 
 };
 

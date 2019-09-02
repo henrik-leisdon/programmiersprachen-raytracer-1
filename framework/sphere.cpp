@@ -17,10 +17,7 @@ Sphere::Sphere(string name, vec3 const& center, double radius, shared_ptr<Materi
     radius_{radius}
     {};
 
-Sphere::~Sphere()
- {
-     
- }
+Sphere::~Sphere() {}
 
 vec3 Sphere::getCenter() const
 {
@@ -56,8 +53,7 @@ Hit Sphere::intersect(Ray const &firstRay, float &t) {
 
     vec3 normDir = normalize(ray.direction);
     intersect = intersectRaySphere(ray.origin, normalize(ray.direction), center_ ,radius_*radius_, t);
-    if(intersect)
-    {
+    if(intersect) {
         vec3 hitpoint = vec3{ray.origin+normDir*t};
         vec3 normToShape = vec3{hitpoint-center_};
         //cout << getName() << " normal in intersect: " << normToShape.x << " " << normToShape.y << " " << normToShape.z <<  "\n";
@@ -66,7 +62,7 @@ Hit Sphere::intersect(Ray const &firstRay, float &t) {
         result.hitpoint_ = hitpoint;
         result.dist_ = t;
         result.direction_ = normDir;
-        if(isTransformed_){
+        if(isTransformed_) {
             vec4 transformNormal = glm::normalize(transpose(inverse_world_transform_)*vec4{result.hitnormal_,0});
             result.hitnormal_ = vec3({transformNormal.x, transformNormal.y, transformNormal.z});
 
@@ -75,7 +71,7 @@ Hit Sphere::intersect(Ray const &firstRay, float &t) {
         }
         return result;
     }
-    else{
+    else {
         Hit result = Hit();
         return result;
     }

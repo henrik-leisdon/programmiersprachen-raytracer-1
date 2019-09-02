@@ -23,22 +23,20 @@ void Renderer::raycast()
 {
   Scene scene;
   std::size_t const checker_pattern_size = 20;
-  //read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/materials.sdf", scene);
-  read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
+  read_sdf("/home/vanessaretz/Schreibtisch/raytracer/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
+  //read_sdf("/home/IN/seso4651/Documents/raytracer/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
   //read_sdf("/home/henrik/Google_Drive/Uni/git/buw_raytracer_new/programmiersprachen-raytracer-1/framework/scene.sdf", scene);
 
   shared_ptr<Camera> cam1 = scene.camera_;
   float d = (width_/2.0f) / (tan(cam1->getAngle()/2.0f*M_PI/180));
-  int frames = 60;
-
+  int frames = 2;
 
   //#pragma omp parallel for
-  for(int f = 0; f<frames; f++){
+  for(int f = 0; f<frames; f++) {
 
     shared_ptr<Camera> cam = scene.camera_;
     cam->translate(vec3{-1, 0, 1});
     cam->rotateY(-1.5);
-    
 
   //#pragma omp parallel for
   for (unsigned y = 0; y < height_; ++y) {
@@ -48,11 +46,6 @@ void Renderer::raycast()
       int step = 2;
       
       Ray ray = cam->calc_cam_ray(x, y, height_, width_, d);
-      //cout << "x: " << x << " y " << y <<endl;
-      //vec3 origin = cam->getPos();
-      //vec3 direction{x-width_/2.0f,y-height_/2.0f, -d};
-      //vec3 normalizedDirection{glm::normalize(direction)};
-      //Ray ray{origin, normalizedDirection};
       p.color = trace(ray, scene, step);
 
       write(p);
@@ -72,8 +65,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
     shared_ptr<Shape> nearestObject;
     Hit h;
     Hit hit;
- 
-    
+
     for (auto i : scene.shapes_) {
         h = i->intersect(ray, distance);    
               
@@ -92,7 +84,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
     if (nearestObject != nullptr) {
       Color final;
       //refraction
-      if(nearestObject->getMaterial()->opacity_>0 && step>=10){
+      if(nearestObject->getMaterial()->opacity_>0 && step>=10) {
         
         float opacity = nearestObject->getMaterial()->opacity_;
         float neg_opacity = 1-opacity;
@@ -101,7 +93,7 @@ Color Renderer::trace(Ray const &ray, Scene const &scene, int step) {
         
       }
       //reflection
-      else if(nearestObject->getMaterial()->ref_>0){
+      else if(nearestObject->getMaterial()->ref_>0) {
 
         float ref_coefficient  = nearestObject->getMaterial()->ref_;
         float negRef = 1.0f-ref_coefficient;
@@ -165,14 +157,9 @@ Color Renderer::ptLight(Hit const &hit, Ray const &ray, Scene const& scene, shar
         {
           diffuse += getDiffuseIllumination(hit, scene, nearestObject, i);
           specular += getSpecularIllumination(hit, ray, scene, nearestObject, i);
-       
         }
-        
-
         // cout << "spec: " << specular << endl;
     }
-        
-    
     return diffuse + specular;
 }
 
@@ -226,12 +213,12 @@ Color Renderer::calculateReflection(Hit const& hit, Ray const& ray, Scene const&
   if(nearestHit.hit_ == true)
   {
     Color refCol;
-  if(steps > 0 && newNearestObject->getMaterial()->ref_>0){
+  if(steps > 0 && newNearestObject->getMaterial()->ref_>0) {
     float ref_coefficient  = newNearestObject->getMaterial()->ref_;
     float negRef = 1.0f-ref_coefficient;
     refCol = calculateReflection(nearestHit, reflectionRay, scene, newNearestObject, steps-1)*ref_coefficient+(getNormalColor(hit,ray, scene,nearesObject) *negRef);
   }
-  else{
+  else {
     refCol = getNormalColor(nearestHit, reflectionRay, scene, newNearestObject); 
   }
   return refCol;
@@ -289,10 +276,6 @@ Color Renderer::calculateRefraction(Hit const& hit, Ray const& ray, Scene const&
     cout << "get background --> no shape behind" << endl;
     return Color{0.1,0.1,0.1};
   }
-
-  
- 
-
 }
 
 
@@ -313,12 +296,10 @@ void Renderer::write(Pixel const& p) {
 }
 
 
-
-
 /*Color Renderer::calculateSpecular(Hit const& hit, shared_ptr<Shape> nearestObject, Scene const& scene, Ray const& ray, vec3 const& hitpoint)
 {
   Color specColor{0,0,0};
-  for(auto i : scene.light_) 
+  for(auto i : scene.light_)
   {
     vec3 vecToLight = normalize(i->getPos()-hitpoint);
     bool specular = true;
@@ -332,13 +313,13 @@ void Renderer::write(Pixel const& p) {
        {
          specular = false;
        }
-       
-    } 
+
+    }
     if(specular)
     {
       float m = nearestObject->getMaterial()->m_;
       vec3 v = normalize(scene.camera_->getPos()-hitpoint);
-  
+
       vec3 r = dot(hit.direction_,vecToLight)*2.0f*hit.direction_-vecToLight;
       float p = dot(v,r);
       if(p<0)
@@ -350,5 +331,5 @@ void Renderer::write(Pixel const& p) {
     }
   }
   return specColor;
-  
+
 }*/
