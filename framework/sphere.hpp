@@ -25,7 +25,6 @@ class Sphere : public Shape
         Hit intersect(Ray const& ray, float& t) override;
 
         ostream& print (ostream& os) const override;
-       
 
     private:
         vec3 center_;

@@ -67,18 +67,12 @@ Hit Sphere::intersect(Ray const &firstRay, float &t) {
         result.dist_ = t;
         result.direction_ = normDir;
         if(isTransformed_){
-            //result.hitnormal_ = vec3(mat3(transpose(inverse_world_transform_))*result.hitnormal_);
             vec4 transformNormal = glm::normalize(transpose(inverse_world_transform_)*vec4{result.hitnormal_,0});
             result.hitnormal_ = vec3({transformNormal.x, transformNormal.y, transformNormal.z});
 
             vec4 transformHit = world_transform_ * vec4{result.hitpoint_, 1};
             result.hitpoint_ = vec3{transformHit.x, transformHit.y, transformHit.z};
-            //result.hitpoint_ = vec3(world_transform_*vec4(result.hitpoint_,1));
-
         }
-        
-
-        //result(intersect, t, hitpoint, normDir, normToShape);
         return result;
     }
     else{
